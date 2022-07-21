@@ -1,0 +1,39 @@
+local ColyseusClient = require "colyseus.client"
+
+local client
+local room
+
+local function _on_message_start_new_game(message)
+	-- pass
+end
+
+local function _update_gamestate(state)
+	-- pass
+end
+
+local function _setup_colyseus_debug()
+	client = ColyseusClient.new("ws://localhost:2567")
+
+	client:create("gameRoom", {}, function(err, _room)
+		if err then
+			print("JOIN ERROR: " .. err)
+			return
+		end
+
+		room = _room
+
+		room:on_message("startNewGame", function(message)
+			_on_message_start_new_game(message)
+		end)
+
+		room:on("statechange", function(state)
+			_update_gamestate(state)
+		end)
+
+		room:send("startNewGame", { password = "thud" })
+	end)
+end
+
+function init(self)
+	_setup_colyseus_debug()
+end
