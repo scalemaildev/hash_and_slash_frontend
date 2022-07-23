@@ -126,11 +126,11 @@ end
 local HASH_MODULUS = 10000
 
 function Hex:hash()
-	return HASH_MODULUS * self.x + self.y
+	return HASH_MODULUS * self.y + self.x
 end
 
 function Hex.unhash(hash)
-	return Hex.new(math.floor(hash / HASH_MODULUS), hash % HASH_MODULUS)
+	return Hex.new(hash % HASH_MODULUS, math.floor(hash / HASH_MODULUS))
 end
 
 -- direction hexes

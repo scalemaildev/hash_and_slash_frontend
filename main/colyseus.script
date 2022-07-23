@@ -1,13 +1,10 @@
 local ColyseusClient = require "colyseus.client"
+local gamestate = require "main.gamestate"
 
 local client
 local room
 
 local function _on_message_start_new_game(message)
-	-- pass
-end
-
-local function _update_gamestate(state)
 	-- pass
 end
 
@@ -27,7 +24,15 @@ local function _setup_colyseus_debug()
 		end)
 
 		room:on("statechange", function(state)
-			_update_gamestate(state)
+			-- vis_tiles
+			for k in pairs(state.visTiles.items) do
+				local tile_type = state.visTiles.items[k].glyph
+				if tile_type == "" then
+					tile_type = "wall"
+				end
+				gamestate.set_tile(k, tile_type)
+			end
+			msg.post("vismap", "update_vismap")
 		end)
 
 		room:send("startNewGame", { password = "thud" })

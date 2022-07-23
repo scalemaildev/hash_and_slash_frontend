@@ -1,0 +1,40 @@
+local gamestate = require "main.gamestate"
+
+local function _create_tile(tile_params)
+	local x = tile_params.x
+	local y = tile_params.y
+	factory.create('#tilefactory', vmath.vector3(x, y, 1))
+end
+
+local function _create_vistiles()
+	local vismap = gamestate.get_vismap()
+	local center_pos = {
+		x = 0,
+		y = 0
+	}
+	for pos in pairs(vismap) do
+		local x = (pos % 10000) * 19
+		local y = ((pos - x) / 10000) * 32
+		tile_type = vismap[pos]
+		local tile_params = {
+			x = x,
+			y = y,
+			tile_type = tile_type
+		}
+		
+		_create_tile(tile_params)
+		if tile_type == "<" then
+			center_pos.x = x
+			center_pos.y = y
+		end
+	end
+
+	return center_pos
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("update_vismap") then
+		local center_pos = _create_vistiles()
+		msg.post("camera#camera", "recenter", center_pos)
+	end
+end

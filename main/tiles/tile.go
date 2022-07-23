@@ -1,6 +1,6 @@
 components {
   id: "hex"
-  component: "/main/map/hex.script"
+  component: "/main/tiles/hex.script"
   position {
     x: 0.0
     y: 0.0
@@ -16,7 +16,7 @@ components {
 embedded_components {
   id: "sprite"
   type: "sprite"
-  data: "tile_set: \"/main/art/floor_tiles.atlas\"\n"
+  data: "tile_set: \"/main/tiles/floor_tiles.atlas\"\n"
   "default_animation: \"tester\"\n"
   "material: \"/builtins/materials/sprite.material\"\n"
   "blend_mode: BLEND_MODE_ALPHA\n"
