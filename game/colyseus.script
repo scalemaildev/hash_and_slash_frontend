@@ -1,5 +1,5 @@
 local ColyseusClient = require "colyseus.client"
-local gamestate = require "main.gamestate"
+local gamestate = require "game.gamestate"
 
 local client
 local room
