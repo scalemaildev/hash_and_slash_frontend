@@ -1,15 +1,15 @@
-gamestate = {}
-
-local vis_tiles = {}
+Gamestate = {
+	tiles = {}
+}
 
 -- SETTERS
-function gamestate.set_tile(pos, tile_type)
-	vis_tiles[pos] = tile_type
+function Gamestate.set_tile(pos, tile_type)
+	Gamestate.tiles[pos] = tile_type
 end
 
 -- GETTERS
-function gamestate.get_vismap()
-	return vis_tiles
+function Gamestate.get_tiles()
+	return Gamestate.tiles
 end
 
-return gamestate
+return Gamestate

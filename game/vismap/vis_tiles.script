@@ -1,0 +1,38 @@
+local Gamestate = require "game.gamestate"
+local Geo = require "game.vismap.tiles.geo"
+
+-- this is a table of the actual tile game objects
+vis_tiles = {}
+
+local function _create_tile(pos, tile_type)
+	local coord = Geo.int_to_coord(pos)
+	local x = coord.x * 32
+	local y = coord.y * 45
+	local z = -(coord.y / 10000)
+
+	local tile;
+
+	if tile_type == "wall" then
+		tile = factory.create("#walltile_factory", vmath.vector3(x, y, z))
+	else
+		tile = factory.create("#floortile_factory", vmath.vector3(x, y, z))
+	end
+
+	vis_tiles[pos] = tile
+end
+
+local function _build_vis_tiles()
+	local _tiles = Gamestate.get_tiles()
+
+	for pos in pairs(_tiles) do
+		local tile_type = _tiles[pos]
+
+		_create_tile(pos, tile_type)
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("update_vis_tiles") then
+		_build_vis_tiles()
+	end
+end

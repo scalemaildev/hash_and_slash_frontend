@@ -73,8 +73,8 @@ embedded_instances {
 embedded_instances {
   id: "vismap"
   data: "components {\n"
-  "  id: \"vismap\"\n"
-  "  component: \"/game/vismap.script\"\n"
+  "  id: \"vis_tiles\"\n"
+  "  component: \"/game/vismap/vis_tiles.script\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -90,7 +90,7 @@ embedded_instances {
   "embedded_components {\n"
   "  id: \"floortile_factory\"\n"
   "  type: \"factory\"\n"
-  "  data: \"prototype: \\\"/game/floor_tile.go\\\"\\n"
+  "  data: \"prototype: \\\"/game/vismap/tiles/floor_tile.go\\\"\\n"
   "load_dynamically: false\\n"
   "\"\n"
   "  position {\n"
@@ -108,64 +108,8 @@ embedded_instances {
   "embedded_components {\n"
   "  id: \"walltile_factory\"\n"
   "  type: \"factory\"\n"
-  "  data: \"prototype: \\\"/game/wall_tile.go\\\"\\n"
+  "  data: \"prototype: \\\"/game/vismap/tiles/wall_tile.go\\\"\\n"
   "load_dynamically: false\\n"
-  "\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  ""
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
-embedded_instances {
-  id: "camera"
-  data: "components {\n"
-  "  id: \"camera\"\n"
-  "  component: \"/game/camera.script\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"view\"\n"
-  "  type: \"camera\"\n"
-  "  data: \"aspect_ratio: 1.0\\n"
-  "fov: 0.7854\\n"
-  "near_z: 0.1\\n"
-  "far_z: 1000.0\\n"
-  "auto_aspect_ratio: 0\\n"
   "\"\n"
   "  position {\n"
   "    x: 0.0\n"
