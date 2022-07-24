@@ -1,6 +1,6 @@
 images {
   image: "/assets/art/wall_tiles/wall.png"
-  sprite_trim_mode: SPRITE_TRIM_MODE_6
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 margin: 0
 extrude_borders: 2

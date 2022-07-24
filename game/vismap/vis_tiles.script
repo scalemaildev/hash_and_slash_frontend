@@ -8,7 +8,7 @@ local function _create_tile(pos, tile_type)
 	local coord = Geo.int_to_coord(pos)
 	local x = coord.x * 32
 	local y = coord.y * 45
-	local z = -(coord.y / 10000)
+	local z = coord.y / 10000
 
 	local tile;
 
@@ -17,6 +17,12 @@ local function _create_tile(pos, tile_type)
 	else
 		tile = factory.create("#floortile_factory", vmath.vector3(x, y, z))
 	end
+
+	-- TEMP -- set camera position to stairs
+	if tile_type == "<" then
+		go.set_position(vmath.vector3(x, y, 1), "camera")
+	end
+	-- TEMP
 
 	vis_tiles[pos] = tile
 end
