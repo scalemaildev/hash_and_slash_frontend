@@ -1,5 +1,5 @@
 local Gamestate = require "game.gamestate"
-local Geo = require "game.vismap.geo"
+local Geo = require "vismap.geo"
 
 vis_actors = {}
 
@@ -12,7 +12,7 @@ local function _create_actor(id, pos, actor_type)
 	if actor_type == "@" then
 		actor = factory.create("#player_factory", v3)
 		local camera_pos = Geo.int_to_camera(pos)
-		go.set_position(camera_pos, "camera#camera")
+		go.set_position(camera_pos, "/vismap/camera#script")
 	elseif actor_type == "o" then
 		actor = factory.create("#enemy_factory", v3)
 	elseif actor_type == "T" then

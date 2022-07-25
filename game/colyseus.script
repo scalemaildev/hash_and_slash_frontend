@@ -19,7 +19,7 @@ local function _update_gamestate(state)
 		end
 		Gamestate.set_tile(k, tile_type)
 	end
-	msg.post("vismap#vis_tiles", "update_vis_tiles")
+	msg.post("/vismap/factories#vis_tiles", "update_vis_tiles")
 
 	-- vis_actors
 	for id in pairs(state.visActors.items) do
@@ -27,7 +27,7 @@ local function _update_gamestate(state)
 		local actor_type = state.visActors.items[id].glyph
 		Gamestate.set_actor(id, pos, actor_type)
 	end
-	msg.post("vismap#vis_actors", "update_vis_actors")
+	msg.post("/vismap/factories#vis_actors", "update_vis_actors")
 end
 
 local function _join_room(room_id)

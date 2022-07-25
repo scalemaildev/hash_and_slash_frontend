@@ -1,4 +1,24 @@
-name: "default"
+name: "game"
+collection_instances {
+  id: "vismap"
+  collection: "/vismap/vismap.collection"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
 scale_along_z: 0
 embedded_instances {
   id: "main"
@@ -40,128 +60,6 @@ embedded_instances {
   data: "components {\n"
   "  id: \"colyseus\"\n"
   "  component: \"/game/colyseus.script\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  ""
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
-embedded_instances {
-  id: "vismap"
-  data: "components {\n"
-  "  id: \"vis_tiles\"\n"
-  "  component: \"/game/vismap/vis_tiles.script\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  "components {\n"
-  "  id: \"vis_actors\"\n"
-  "  component: \"/game/vismap/vis_actors.script\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"floortile_factory\"\n"
-  "  type: \"factory\"\n"
-  "  data: \"prototype: \\\"/game/vismap/tiles/floor_tile.go\\\"\\n"
-  "load_dynamically: false\\n"
-  "\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"walltile_factory\"\n"
-  "  type: \"factory\"\n"
-  "  data: \"prototype: \\\"/game/vismap/tiles/wall_tile.go\\\"\\n"
-  "load_dynamically: false\\n"
-  "\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"player_factory\"\n"
-  "  type: \"factory\"\n"
-  "  data: \"prototype: \\\"/game/vismap/actors/player.go\\\"\\n"
-  "load_dynamically: false\\n"
-  "\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"enemy_factory\"\n"
-  "  type: \"factory\"\n"
-  "  data: \"prototype: \\\"/game/vismap/actors/enemy.go\\\"\\n"
-  "load_dynamically: false\\n"
-  "\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

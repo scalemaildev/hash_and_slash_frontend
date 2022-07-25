@@ -1,5 +1,5 @@
 local Gamestate = require "game.gamestate"
-local Geo = require "game.vismap.geo"
+local Geo = require "vismap.geo"
 
 -- this is a table of the actual tile game objects
 vis_tiles = {}
