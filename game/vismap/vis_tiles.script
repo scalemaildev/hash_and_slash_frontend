@@ -1,28 +1,26 @@
 local Gamestate = require "game.gamestate"
-local Geo = require "game.vismap.tiles.geo"
+local Geo = require "game.vismap.geo"
 
 -- this is a table of the actual tile game objects
 vis_tiles = {}
 
 local function _create_tile(pos, tile_type)
 	local coord = Geo.int_to_coord(pos)
-	local x = coord.x * 32
-	local y = coord.y * 45
-	local z = coord.y / 10000
+	local v3
 
 	local tile;
 
 	if tile_type == "wall" then
-		tile = factory.create("#walltile_factory", vmath.vector3(x, y, z))
+		v3 = Geo.coord_to_v3(coord, 0.00001)
+		tile = factory.create("#walltile_factory", v3)
 	else
-		tile = factory.create("#floortile_factory", vmath.vector3(x, y, z))
+		v3 = Geo.coord_to_v3(coord, 0)
+		tile = factory.create("#floortile_factory", v3)
 	end
 
-	-- TEMP -- set camera position to stairs
 	if tile_type == "<" then
-		go.set_position(vmath.vector3(x, y, 1), "camera")
+		sprite.play_flipbook(tile, "stairs")
 	end
-	-- TEMP
 
 	vis_tiles[pos] = tile
 end
@@ -37,7 +35,7 @@ local function _build_vis_tiles()
 	end
 end
 
-function on_message(self, message_id, message, sender)
+function on_message(self, message_id, message)
 	if message_id == hash("update_vis_tiles") then
 		_build_vis_tiles()
 	end

@@ -1,0 +1,44 @@
+local Gamestate = require "game.gamestate"
+local Geo = require "game.vismap.geo"
+
+vis_actors = {}
+
+local function _create_actor(id, pos, actor_type)
+	local coord = Geo.int_to_coord(pos)
+	local v3 = Geo.coord_to_v3(coord, 0.00001)
+
+	local actor;
+
+	if actor_type == "@" then
+		actor = factory.create("#player_factory", v3)
+		local camera_pos = Geo.int_to_camera(pos)
+		go.set_position(camera_pos, "camera#camera")
+	elseif actor_type == "o" then
+		actor = factory.create("#enemy_factory", v3)
+	elseif actor_type == "T" then
+		actor = factory.create("#enemy_factory", v3)
+		sprite.play_flipbook(actor, "troll")
+	elseif actor_type == "g" then
+		actor = factory.create("#enemy_factory", v3)
+		sprite.play_flipbook(actor, "goblin")
+	end
+
+	vis_actors[id] = actor
+end
+
+local function _build_vis_actors()
+	local _actors = Gamestate.get_actors()
+
+	for id in pairs(_actors) do
+		local actor_type = _actors[id].actor_type
+		local pos = _actors[id].pos
+
+		_create_actor(id, pos, actor_type)
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("update_vis_actors") then
+		_build_vis_actors()
+	end
+end

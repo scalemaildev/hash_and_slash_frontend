@@ -1,16 +1,54 @@
 local ColyseusClient = require "colyseus.client"
 local Gamestate = require "game.gamestate"
 
+local debug
+
 local client
 local room
 
-local function _on_message_start_new_game(message)
+local function _start_new_game(message)
 	-- pass
 end
 
-local function _setup_colyseus_debug()
-	client = ColyseusClient.new("ws://localhost:2567")
+local function _update_gamestate(state)
+	-- vis_tiles
+	for k in pairs(state.visTiles.items) do
+		local tile_type = state.visTiles.items[k].glyph
+		if tile_type == "" then
+			tile_type = "wall"
+		end
+		Gamestate.set_tile(k, tile_type)
+	end
+	msg.post("vismap#vis_tiles", "update_vis_tiles")
 
+	-- vis_actors
+	for id in pairs(state.visActors.items) do
+		local pos = state.visActors.items[id].pos
+		local actor_type = state.visActors.items[id].glyph
+		Gamestate.set_actor(id, pos, actor_type)
+	end
+	msg.post("vismap#vis_actors", "update_vis_actors")
+end
+
+local function _join_room(room_id)
+	-- TODO needs a flag to skip obscount
+	client:join_by_id(room_id, {}, function(err, _room)
+		if err then
+			print("JOIN ERROR: " .. err)
+			return
+		end
+
+		room:on_message("startNewGame", function(message)
+			_start_new_game(message)
+		end)
+
+		room:on("statechange", function(state)
+			_update_gamestate(state)
+		end)
+	end)
+end
+
+local function _create_debug_room()
 	client:create("gameRoom", {}, function(err, _room)
 		if err then
 			print("JOIN ERROR: " .. err)
@@ -20,25 +58,38 @@ local function _setup_colyseus_debug()
 		room = _room
 
 		room:on_message("startNewGame", function(message)
-			_on_message_start_new_game(message)
+			_start_new_game(message)
 		end)
 
 		room:on("statechange", function(state)
-			-- vis_tiles
-			for k in pairs(state.visTiles.items) do
-				local tile_type = state.visTiles.items[k].glyph
-				if tile_type == "" then
-					tile_type = "wall"
-				end
-				Gamestate.set_tile(k, tile_type)
-			end
-			msg.post("vismap#vis_tiles", "update_vis_tiles")
+			_update_gamestate(state)
 		end)
 
 		room:send("startNewGame", { password = "thud" })
 	end)
 end
 
+local function _setup_colyseus()
+	if debug then
+		client = ColyseusClient.new("ws://localhost:2567")
+		_create_debug_room()
+	else
+		client = ColyseusClient.new("wss://dpbtbu.us-east-vin.colyseus.net")
+	end
+end
+
+local function on_message(self, message_id, message)
+	if message_id == hash("join_room") then
+		_join_room(message.room_id)
+	end
+end
+
 function init(self)
-	_setup_colyseus_debug()
+	debug = sys.get_engine_info().is_debug
+
+	if debug then
+		print("DEBUG MODE")
+	end
+	
+	_setup_colyseus()
 end
