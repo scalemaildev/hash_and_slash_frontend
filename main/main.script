@@ -5,6 +5,7 @@ end
 
 local function _js_listener(self, message_id, message)
 	if message_id == hash("join_room") then
+		pprint(message)
 		msg.post("game#colyseus", "join_room", { room_id = message.room_id })
 		_load_game(self)
 	end
