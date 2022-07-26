@@ -1,30 +1,10 @@
-name: "game"
-collection_instances {
-  id: "vismap"
-  collection: "/vismap/vismap.collection"
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
+name: "main"
 scale_along_z: 0
 embedded_instances {
-  id: "game"
+  id: "splash"
   data: "components {\n"
-  "  id: \"game\"\n"
-  "  component: \"/game/game.script\"\n"
+  "  id: \"splash\"\n"
+  "  component: \"/main/splash/splash.gui\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -56,10 +36,10 @@ embedded_instances {
   }
 }
 embedded_instances {
-  id: "colyseus"
+  id: "main"
   data: "components {\n"
-  "  id: \"colyseus\"\n"
-  "  component: \"/game/colyseus.script\"\n"
+  "  id: \"main\"\n"
+  "  component: \"/main/main.script\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -72,29 +52,12 @@ embedded_instances {
   "    w: 1.0\n"
   "  }\n"
   "}\n"
-  ""
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
-embedded_instances {
-  id: "camera"
-  data: "components {\n"
-  "  id: \"camera\"\n"
-  "  component: \"/orthographic/camera.script\"\n"
+  "embedded_components {\n"
+  "  id: \"game_proxy\"\n"
+  "  type: \"collectionproxy\"\n"
+  "  data: \"collection: \\\"/game/game.collection\\\"\\n"
+  "exclude: false\\n"
+  "\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -105,16 +68,6 @@ embedded_instances {
   "    y: 0.0\n"
   "    z: 0.0\n"
   "    w: 1.0\n"
-  "  }\n"
-  "  properties {\n"
-  "    id: \"near_z\"\n"
-  "    value: \"1.0\"\n"
-  "    type: PROPERTY_TYPE_NUMBER\n"
-  "  }\n"
-  "  properties {\n"
-  "    id: \"far_z\"\n"
-  "    value: \"-1.0\"\n"
-  "    type: PROPERTY_TYPE_NUMBER\n"
   "  }\n"
   "}\n"
   ""

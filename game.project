@@ -1,5 +1,5 @@
 [bootstrap]
-main_collection = /game/game.collectionc
+main_collection = /main/main.collectionc
 render = /orthographic/render/orthographic.renderc
 
 [display]

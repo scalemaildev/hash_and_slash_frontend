@@ -1,0 +1,17 @@
+local function _load_game(self)
+	msg.post("main#game_proxy", "load")
+	msg.post("main#game_proxy", "enable")
+end
+
+local function _js_listener(self, message_id, message)
+	if message_id == hash("join_room") then
+		msg.post("game#colyseus", "join_room", { room_id = message.room_id })
+		_load_game(self)
+	end
+end
+
+function init(self)
+	if jstodef then
+		jstodef.add_listener(_js_listener)
+	end
+end

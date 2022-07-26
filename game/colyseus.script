@@ -31,8 +31,7 @@ local function _update_gamestate(state)
 end
 
 local function _join_room(room_id)
-	-- TODO needs a flag to skip obscount
-	client:join_by_id(room_id, {}, function(err, _room)
+	client:join_by_id(room_id, { noObs = true }, function(err, _room)
 		if err then
 			print("JOIN ERROR: " .. err)
 			return
