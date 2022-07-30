@@ -15,11 +15,21 @@ payment_pointer = YOUR_PAYMENT_POINTER
 [project]
 title = Hash & Slash Frontend
 version = 0.1
+developer = John Conway
 dependencies#0 = https://github.com/colyseus/colyseus-defold/archive/0.14.1.zip
 dependencies#1 = https://github.com/defold/extension-websocket/archive/refs/tags/3.0.0.zip
 dependencies#2 = https://github.com/britzl/defold-orthographic/archive/refs/tags/3.2.0.zip
 dependencies#3 = https://github.com/AGulev/jstodef/archive/refs/tags/1.4.0.zip
 
 [factory]
+max_count = 4000
+
+[html5]
+show_fullscreen_button = 0
+show_made_with_defold = 0
+show_console_banner = 0
+scale_mode = downscale_fit
+
+[sprite]
 max_count = 4000
 

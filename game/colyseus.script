@@ -31,64 +31,33 @@ local function _update_gamestate(state)
 end
 
 local function _join_room(room_id)
-	client:join_by_id(room_id, { noObs = true }, function(err, _room)
-		if err then
-			print("JOIN ERROR: " .. err)
-			return
-		end
-
-		room:on_message("startNewGame", function(message)
-			_start_new_game(message)
-		end)
-
-		room:on("statechange", function(state)
-			_update_gamestate(state)
-		end)
-	end)
-end
-
-local function _create_debug_room()
-	client:create("gameRoom", {}, function(err, _room)
-		if err then
-			print("JOIN ERROR: " .. err)
+	client:join_by_id(room_id, {}, function(err, _room)
+		if (err ~= nil) then
+			print("join error: " .. err)
 			return
 		end
 
 		room = _room
 
-		room:on_message("startNewGame", function(message)
-			_start_new_game(message)
-		end)
-
 		room:on("statechange", function(state)
 			_update_gamestate(state)
 		end)
-
-		room:send("startNewGame", { password = "thud" })
 	end)
 end
 
 local function _setup_colyseus()
 	if debug then
 		client = ColyseusClient.new("ws://localhost:2567")
-		_create_debug_room()
 	else
 		client = ColyseusClient.new("wss://dpbtbu.us-east-vin.colyseus.net")
 	end
-end
 
-local function on_message(self, message_id, message)
-	if message_id == hash("join_room") then
-		_join_room(message.room_id)
-	end
+	local room_id = Gamestate.get_room_id()
+	_join_room(room_id)
 end
 
 function init(self)
 	debug = sys.get_engine_info().is_debug
-
-	if debug then
-		print("DEBUG MODE")
-	end
 	
 	_setup_colyseus()
 end

@@ -1,18 +1,26 @@
+local Gamestate = require "game.gamestate"
+local debug
+
 local function _load_game(self)
 	msg.post("main#game_proxy", "load")
 	msg.post("main#game_proxy", "enable")
 end
 
-local function _js_listener(self, message_id, message)
-	if message_id == hash("join_room") then
-		pprint(message)
-		msg.post("game#colyseus", "join_room", { room_id = message.room_id })
+local function jstodef_listener(self, message_id, message)
+	if message_id == "join_game" then
+		Gamestate.set_room_id(message.room_id)
 		_load_game(self)
 	end
 end
 
 function init(self)
+	debug = sys.get_engine_info().is_debug
+
+	if debug then
+		print("DEBUG MODE")
+	end
+	
 	if jstodef then
-		jstodef.add_listener(_js_listener)
+		jstodef.add_listener(jstodef_listener)
 	end
 end
