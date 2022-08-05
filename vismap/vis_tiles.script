@@ -1,8 +1,7 @@
 local Gamestate = require "game.gamestate"
 local Geo = require "vismap.geo"
 
--- this is a table of the actual tile game objects
-vis_tiles = {}
+local _vis_tiles = {}
 
 local function _create_tile(pos, tile_type)
 	local coord = Geo.int_to_coord(pos)
@@ -22,7 +21,7 @@ local function _create_tile(pos, tile_type)
 		sprite.play_flipbook(tile, "stairs")
 	end
 
-	vis_tiles[pos] = tile
+	_vis_tiles[hash(pos)] = tile
 end
 
 local function _build_vis_tiles()
@@ -30,8 +29,11 @@ local function _build_vis_tiles()
 
 	for pos in pairs(_tiles) do
 		local tile_type = _tiles[pos]
+		local _existing_tile = _vis_tiles[hash(pos)]
 
-		_create_tile(pos, tile_type)
+		if _existing_tile == nil then
+			_create_tile(pos, tile_type)
+		end
 	end
 end
 

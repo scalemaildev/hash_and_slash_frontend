@@ -1,7 +1,7 @@
 local Gamestate = require "game.gamestate"
 local Geo = require "vismap.geo"
 
-vis_actors = {}
+local _vis_actors = {}
 
 local function _create_actor(id, pos, actor_type)
 	local coord = Geo.int_to_coord(pos)
@@ -11,8 +11,9 @@ local function _create_actor(id, pos, actor_type)
 
 	if actor_type == "@" then
 		actor = factory.create("#player_factory", v3)
-		local camera_pos = Geo.int_to_camera(pos)
-		go.set_position(camera_pos, "/vismap/camera#script")
+		local _camera_pos = vmath.vector3(v3.x, v3.y, 1)
+		
+		go.set_position(_camera_pos, "/vismap/camera#script")
 	elseif actor_type == "o" then
 		actor = factory.create("#enemy_factory", v3)
 	elseif actor_type == "T" then
@@ -23,11 +24,17 @@ local function _create_actor(id, pos, actor_type)
 		sprite.play_flipbook(actor, "goblin")
 	end
 
-	vis_actors[id] = actor
+	_vis_actors[hash(id)] = actor
 end
 
 local function _build_vis_actors()
 	local _actors = Gamestate.get_actors()
+
+	for id in pairs(_vis_actors) do
+		local _actor = _vis_actors[id]
+		go.delete(_actor, true)
+		_vis_actors[id] = nil
+	end
 
 	for id in pairs(_actors) do
 		local actor_type = _actors[id].actor_type

@@ -12,6 +12,8 @@ end
 
 local function _update_gamestate(state)
 	-- vis_tiles
+	Gamestate.clear_tiles()
+	
 	for k in pairs(state.visTiles.items) do
 		local tile_type = state.visTiles.items[k].glyph
 		if tile_type == "" then
@@ -22,6 +24,7 @@ local function _update_gamestate(state)
 	msg.post("/vismap/factories#vis_tiles", "update_vis_tiles")
 
 	-- vis_actors
+	Gamestate.clear_actors()
 	for id in pairs(state.visActors.items) do
 		local pos = state.visActors.items[id].pos
 		local actor_type = state.visActors.items[id].glyph
@@ -31,7 +34,7 @@ local function _update_gamestate(state)
 end
 
 local function _join_room(room_id)
-	client:join_by_id(room_id, {}, function(err, _room)
+	client:join_by_id(room_id, { isObserver = false }, function(err, _room)
 		if (err ~= nil) then
 			print("join error: " .. err)
 			return
@@ -42,6 +45,43 @@ local function _join_room(room_id)
 		room:on("statechange", function(state)
 			_update_gamestate(state)
 		end)
+
+		room:on_message("setGameActive", function(message)
+			--
+		end)
+
+		room:on_message("updateObsCount", function(message)
+			--
+		end)
+	end)
+end
+
+local function _create_and_join_room()
+	client:create("gameRoom", {}, function(err, _room)
+		if (err ~= nil) then
+			print("join error: " .. err)
+			return
+		end
+
+		room = _room
+
+		room:on_message("startNewGame", function(message)
+			_start_new_game(message)
+		end)
+
+		room:on_message("setGameActive", function(message)
+			--
+		end)
+
+		room:on_message("updateObsCount", function(message)
+			--
+		end)
+
+		room:on("statechange", function(state)
+			_update_gamestate(state)
+		end)
+
+		room:send("startNewGame", { password = "thud" })
 	end)
 end
 
