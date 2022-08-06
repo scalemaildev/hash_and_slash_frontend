@@ -46,6 +46,8 @@ local function join_room(room_id)
 			for _, change in pairs(changes) do
 				if change.field == "round" then
 					-- update round display
+				elseif change.field == "gameResult" then
+					-- change to game over screen
 				end
 			end
 		end

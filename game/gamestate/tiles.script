@@ -22,10 +22,10 @@ function create_tile(pos, tile_type)
 
 	tiles[hash(pos)] = tile
 
-	-- DELETE
+	---
 	local camera_pos = vmath.vector3(v3.x, v3.y, 1)
 	go.set_position(camera_pos, "/camera#script")
-	--
+	---
 end
 
 function tint_tile(pos)
