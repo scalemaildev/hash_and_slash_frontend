@@ -1,7 +1,7 @@
-local Gamestate = require "game.gamestate"
+local Gamestate = require "game.gamestate.gamestate"
 local debug
 
-local function _load_game(self)
+local function load_game(self)
 	msg.post("main#game_proxy", "load")
 	msg.post("main#game_proxy", "enable")
 end
@@ -9,7 +9,7 @@ end
 local function jstodef_listener(self, message_id, message)
 	if message_id == "join_game" then
 		Gamestate.set_room_id(message.room_id)
-		_load_game(self)
+		load_game(self)
 	end
 end
 

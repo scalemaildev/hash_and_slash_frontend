@@ -1,0 +1,54 @@
+local Geo = require "game.helpers.geo"
+
+local tiles = {}
+
+function create_tile(pos, tile_type)
+	local coord = Geo.int_to_coord(pos)
+	local v3
+
+	local tile;
+
+	if tile_type == "wall" then
+		v3 = Geo.coord_to_v3(coord, 0.00001)
+		tile = factory.create("/factories#walltile_factory", v3)
+	else
+		v3 = Geo.coord_to_v3(coord, 0)
+		tile = factory.create("/factories#floortile_factory", v3)
+	end
+
+	if tile_type == "<" then
+		sprite.play_flipbook(tile, "stairs")
+	end
+
+	tiles[hash(pos)] = tile
+
+	-- DELETE
+	local camera_pos = vmath.vector3(v3.x, v3.y, 1)
+	go.set_position(camera_pos, "/camera#script")
+	--
+end
+
+function tint_tile(pos)
+	--
+end
+
+function untint_tile(pos)
+	--
+end
+
+function remove_tile(pos)
+	go.delete(tiles[pos])
+	tiles[pos] = nil
+end
+
+function on_message(self, message_id, message)
+	if message_id == hash("create_tile") then
+		create_tile(message.pos, message.tile_type)
+	elseif message_id == hash("remove_tile") then
+		remove_tile(message.pos)
+	elseif message_id == hash("tint_tile") then
+		tint_tile(message.pos)
+	elseif message_id == hash("untint_tile") then
+		untint_tile(message.pos)
+	end
+end

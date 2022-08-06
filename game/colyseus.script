@@ -1,39 +1,12 @@
 local ColyseusClient = require "colyseus.client"
-local Gamestate = require "game.gamestate"
+local Gamestate = require "game.gamestate.gamestate"
 
 local debug
 
 local client
 local room
 
-local function _start_new_game(message)
-	-- pass
-end
-
-local function _update_gamestate(state)
-	-- vis_tiles
-	Gamestate.clear_tiles()
-	
-	for k in pairs(state.visTiles.items) do
-		local tile_type = state.visTiles.items[k].glyph
-		if tile_type == "" then
-			tile_type = "wall"
-		end
-		Gamestate.set_tile(k, tile_type)
-	end
-	msg.post("/vismap/factories#vis_tiles", "update_vis_tiles")
-
-	-- vis_actors
-	Gamestate.clear_actors()
-	for id in pairs(state.visActors.items) do
-		local pos = state.visActors.items[id].pos
-		local actor_type = state.visActors.items[id].glyph
-		Gamestate.set_actor(id, pos, actor_type)
-	end
-	msg.post("/vismap/factories#vis_actors", "update_vis_actors")
-end
-
-local function _join_room(room_id)
+local function join_room(room_id)
 	client:join_by_id(room_id, { isObserver = false }, function(err, _room)
 		if (err ~= nil) then
 			print("join error: " .. err)
@@ -42,32 +15,40 @@ local function _join_room(room_id)
 
 		room = _room
 
-		room:on("statechange", function(state)
-			_update_gamestate(state)
-		end)
-
-		room:on_message("setGameActive", function(message)
-			--
-		end)
-
-		room:on_message("updateObsCount", function(message)
-			--
-		end)
-	end)
-end
-
-local function _create_and_join_room()
-	client:create("gameRoom", {}, function(err, _room)
-		if (err ~= nil) then
-			print("join error: " .. err)
-			return
+		-- Visible Coordinates
+		room.state.visCoords['on_add'] = function (coord, key)
+			Gamestate.set_vis_coord(coord, key)
+			msg.post("/game#tiles", "untint_tile", { pos = coord })
 		end
 
-		room = _room
+		room.state.visCoords['on_remove'] = function (coord, key)
+			Gamestate.clear_vis_coord(coord, key)
+			msg.post("/game#tiles", "tint_tile", { pos = coord })
+		end
 
-		room:on_message("startNewGame", function(message)
-			_start_new_game(message)
-		end)
+		-- Known Tiles
+		room.state.tiles['on_add'] = function (tile, pos)
+			msg.post("/game#tiles", "create_tile", { pos = pos, tile_type = tile.symbol })
+		end
+		
+		room.state.tiles['on_remove'] = function (_, pos)
+			msg.post("/game#tiles", "remove_tile", { pos = pos })
+		end
+
+		-- Entities
+		---- listen for add/remove/onchange here
+
+		-- Actors
+		---- listen for add/remove/onchange here
+
+		-- General State Updates
+		room.state['on_change'] = function (changes)
+			for _, change in pairs(changes) do
+				if change.field == "round" then
+					-- update round display
+				end
+			end
+		end
 
 		room:on_message("setGameActive", function(message)
 			--
@@ -76,16 +57,10 @@ local function _create_and_join_room()
 		room:on_message("updateObsCount", function(message)
 			--
 		end)
-
-		room:on("statechange", function(state)
-			_update_gamestate(state)
-		end)
-
-		room:send("startNewGame", { password = "thud" })
 	end)
 end
 
-local function _setup_colyseus()
+local function setup_colyseus()
 	if debug then
 		client = ColyseusClient.new("ws://localhost:2567")
 	else
@@ -93,11 +68,11 @@ local function _setup_colyseus()
 	end
 
 	local room_id = Gamestate.get_room_id()
-	_join_room(room_id)
+	join_room(room_id)
 end
 
 function init(self)
 	debug = sys.get_engine_info().is_debug
 	
-	_setup_colyseus()
+	setup_colyseus()
 end

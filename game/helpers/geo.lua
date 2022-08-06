@@ -8,8 +8,8 @@ function Geo.int_to_coord(int_pos)
 end
 
 function Geo.coord_to_v3(coord, z_offset)
-	local x = (coord.x * 22) + 1000
-	local y = (coord.y * 33) + 1000
+	local x = (coord.x * 22)
+	local y = (coord.y * 33)
 	local z = (coord.y / 10000) - z_offset
 
 	return vmath.vector3(x, y, z)
