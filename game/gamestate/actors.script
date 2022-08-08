@@ -1,51 +1,64 @@
 local Gamestate = require "game.gamestate.gamestate"
 local Geo = require "game.helpers.geo"
 
-local _vis_actors = {}
+local actors = {}
 
-local function _create_actor(id, pos, actor_type)
+local function create_actor(id, pos, actor_type)
 	local coord = Geo.int_to_coord(pos)
 	local v3 = Geo.coord_to_v3(coord, 0.00001)
 
 	local actor;
 
-	if actor_type == "@" then
-		actor = factory.create("#player_factory", v3)
-		local _camera_pos = vmath.vector3(v3.x, v3.y, 1)
+	if actor_type == "player" then
+		actor = factory.create("/factories#player_factory", v3)
+		local camera_pos = vmath.vector3(v3.x, v3.y, 1)
 		
-		go.set_position(_camera_pos, "/vismap/camera#script")
-	elseif actor_type == "o" then
-		actor = factory.create("#enemy_factory", v3)
-	elseif actor_type == "T" then
-		actor = factory.create("#enemy_factory", v3)
+		go.set_position(camera_pos, "/camera#script")
+	elseif actor_type == "orc" then
+		actor = factory.create("/factories#enemy_factory", v3)
+	elseif actor_type == "troll" then
+		actor = factory.create("/factories#enemy_factory", v3)
 		sprite.play_flipbook(actor, "troll")
-	elseif actor_type == "g" then
-		actor = factory.create("#enemy_factory", v3)
+	elseif actor_type == "bgoblin" then
+		actor = factory.create("/factories#enemy_factory", v3)
 		sprite.play_flipbook(actor, "goblin")
 	end
 
-	_vis_actors[hash(id)] = actor
+	actors[id] = actor
 end
 
-local function _build_vis_actors()
-	local _actors = Gamestate.get_actors()
+local function update_actor(id, pos, actor_type)
+	local new_coord = Geo.int_to_coord(pos)
+	local v3 = Geo.coord_to_v3(new_coord, 0.00001)
+	local actor = actors[id]
 
-	for id in pairs(_vis_actors) do
-		local _actor = _vis_actors[id]
-		go.delete(_actor, true)
-		_vis_actors[id] = nil
+	if actor_type == "player" then
+		local camera_pos = vmath.vector3(v3.x, v3.y, 1)
+		go.set_position(camera_pos, "/camera#script")
 	end
 
-	for id in pairs(_actors) do
-		local actor_type = _actors[id].actor_type
-		local pos = _actors[id].pos
+	go.set_position(v3, actor)
+end
 
-		_create_actor(id, pos, actor_type)
-	end
+local function remove_actor(id)
+	go.delete(actors[id])
+	actors[id] = nil
 end
 
 function on_message(self, message_id, message, sender)
-	if message_id == hash("update_vis_actors") then
-		_build_vis_actors()
+	if message_id == hash("create_actor") then
+		create_actor(
+		message.id, 
+		message.pos, 
+		message.actor_type
+	)
+	elseif message_id == hash("update_actor") then
+		update_actor(
+		message.id, 
+		message.pos, 
+		message.actor_type
+	)
+	elseif message_id == hash("remove_actor") then
+		remove_actor(message.id)
 	end
 end

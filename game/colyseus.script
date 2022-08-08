@@ -15,39 +15,78 @@ local function join_room(room_id)
 
 		room = _room
 
-		-- Visible Coordinates
-		room.state.visCoords['on_add'] = function (coord, key)
-			Gamestate.set_vis_coord(coord, key)
-			msg.post("/game#tiles", "untint_tile", { pos = coord })
+		-- Visible Positions
+		room.state.vis['on_add'] = function (_, key)
+			Gamestate.see_vis_pos(key)
+			msg.post("/game#tiles", "untint_tile", { pos = key })
 		end
 
-		room.state.visCoords['on_remove'] = function (coord, key)
-			Gamestate.clear_vis_coord(coord, key)
-			msg.post("/game#tiles", "tint_tile", { pos = coord })
+		room.state.vis['on_change'] = function (val, key)
+			if val == true then
+				msg.post("/game#tiles", "untint_tile", { pos = key })
+			else
+				msg.post("/game#tiles", "tint_tile", { pos = key })
+			end
+		end
+
+		room.state.vis['on_remove'] = function (_, key)
+			Gamestate.clear_vis_pos(key)
 		end
 
 		-- Known Tiles
-		room.state.tiles['on_add'] = function (tile, pos)
-			msg.post("/game#tiles", "create_tile", { pos = pos, tile_type = tile.symbol })
+		room.state.tiles['on_add'] = function (tile, _)
+			msg.post("/game#tiles", "create_tile", { pos = tile.pos, tile_type = tile.symbol })
 		end
 		
-		room.state.tiles['on_remove'] = function (_, pos)
-			msg.post("/game#tiles", "remove_tile", { pos = pos })
+		room.state.tiles['on_remove'] = function (tile, _)
+			msg.post("/game#tiles", "remove_tile", { pos = tile.pos })
 		end
 
-		-- Entities
-		---- listen for add/remove/onchange here
+		-- Items
+		room.state.items['on_add'] = function (item, _)
+			msg.post("/game#tiles", "corpsify_tile", { pos = item.pos })
+		end
 
 		-- Actors
-		---- listen for add/remove/onchange here
+		room.state.actors['on_add'] = function (actor, _)
+			msg.post("/game#actors", "create_actor", { 
+				id = actor.id,
+				pos = actor.pos,
+				actor_type = actor.symbol
+			})
+
+			if actor.id == 0 then
+				Gamestate.update_player_stats(actor.hp, actor.maxHp)
+				msg.post("/game#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
+			end
+		end
+
+		room.state.actors['on_change'] = function (actor, _)
+			msg.post("/game#actors", "update_actor", { 
+				id = actor.id,
+				pos = actor.pos,
+				actor_type = actor.symbol 
+			})
+
+			if actor.id == 0 then
+				Gamestate.update_player_stats(actor.hp, actor.maxHp)
+				msg.post("/game#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
+			end
+		end
+
+		room.state.actors['on_remove'] = function (actor, _)
+			msg.post("/game#actors", "remove_actor", { id = actor.id })
+		end
 
 		-- General State Updates
 		room.state['on_change'] = function (changes)
 			for _, change in pairs(changes) do
 				if change.field == "round" then
-					-- update round display
+					Gamestate.set_round(change.value)
+					msg.post("/game#gui", "update_round_text", { new_round = change.value })
 				elseif change.field == "gameResult" then
-					-- change to game over screen
+					Gamestate.set_game_status(change.value)
+					-- TODO now display either a victory or defeat screen and cancel inputs
 				end
 			end
 		end

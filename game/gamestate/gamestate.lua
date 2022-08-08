@@ -1,6 +1,12 @@
 Gamestate = {
 	room_id = "", -- colyseus room, not hcs topic
-	vis_coords = {}
+	round = 0,
+	game_status = 'IN_PROGRESS',
+	player_stats = {
+		hp = 0,
+		max_hp = 0
+	},
+	vis = {}
 }
 
 -- Room ID
@@ -12,17 +18,33 @@ function Gamestate.get_room_id()
 	return Gamestate.room_id
 end
 
--- Visible Coordinates
-function Gamestate.set_vis_coord(coord, key)
-	Gamestate.vis_coords[key] = coord
+-- Round
+function Gamestate.set_round(count)
+	Gamestate.round = count
 end
 
-function Gamestate.clear_vis_coord(coord, key)
-	Gamestate.vis_coords[key] = nil
+-- Game Status
+function Gamestate.set_game_status(new_status)
+	Gamestate.game_status = new_status
 end
 
-function Gamestate.get_vis_coords()
-	return Gamestate.vis_coords
+-- Stats
+function Gamestate.update_player_stats(hp, max_hp)
+	Gamestate.player_stats.hp = hp
+	Gamestate.player_stats.max_hp = max_hp
+end
+
+-- Visible Positions
+function Gamestate.see_vis_pos(key)
+	Gamestate.vis[key] = true
+end
+
+function Gamestate.unsee_vis_pos(key)
+	Gamestate.vis[key] = false
+end
+
+function Gamestate.clear_vis_pos(key)
+	Gamestate.vis[key] = nil
 end
 
 return Gamestate

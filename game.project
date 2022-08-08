@@ -22,7 +22,7 @@ dependencies#2 = https://github.com/britzl/defold-orthographic/archive/refs/tags
 dependencies#3 = https://github.com/AGulev/jstodef/archive/refs/tags/1.4.0.zip
 
 [factory]
-max_count = 20000
+max_count = 25000
 
 [html5]
 show_fullscreen_button = 0
@@ -31,5 +31,5 @@ show_console_banner = 0
 scale_mode = downscale_fit
 
 [sprite]
-max_count = 20000
+max_count = 25000
 

@@ -3,6 +3,7 @@ local Geo = require "game.helpers.geo"
 local tiles = {}
 
 function create_tile(pos, tile_type)
+	local _pos = tostring(pos)
 	local coord = Geo.int_to_coord(pos)
 	local v3
 
@@ -20,25 +21,49 @@ function create_tile(pos, tile_type)
 		sprite.play_flipbook(tile, "stairs")
 	end
 
-	tiles[hash(pos)] = tile
+	tiles[_pos] = tile
+end
 
-	---
-	local camera_pos = vmath.vector3(v3.x, v3.y, 1)
-	go.set_position(camera_pos, "/camera#script")
-	---
+function corpsify_tile(pos)
+	local _pos = tostring(pos)
+	local tile = tiles[_pos]
+
+	sprite.play_flipbook(tile, "corpse")
 end
 
 function tint_tile(pos)
-	--
+	local _pos = tostring(pos)
+	
+	if tiles[_pos] == nil then
+		return
+	end
+	
+	local tile = tiles[_pos]
+	local url = msg.url(nil, tile, "sprite")
+	go.set(url, "tint", vmath.vector4(0.6, 0.6, 0.6, 1))
 end
 
 function untint_tile(pos)
-	--
+	local _pos = tostring(pos)
+	
+	if tiles[_pos] == nil then
+		return
+	end
+	
+	local tile = tiles[_pos]
+	local url = msg.url(nil, tile, "sprite")
+	go.set(url, "tint", vmath.vector4(1, 1, 1, 1))
 end
 
 function remove_tile(pos)
-	go.delete(tiles[pos])
-	tiles[pos] = nil
+	local _pos = tostring(pos)
+	
+	if tiles[_pos] == nil then
+		return
+	end
+	
+	go.delete(tiles[_pos])
+	tiles[_pos] = nil
 end
 
 function on_message(self, message_id, message)
@@ -50,5 +75,7 @@ function on_message(self, message_id, message)
 		tint_tile(message.pos)
 	elseif message_id == hash("untint_tile") then
 		untint_tile(message.pos)
+	elseif message_id == hash("corpsify_tile") then
+		corpsify_tile(message.pos)
 	end
 end

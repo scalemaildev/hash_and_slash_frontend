@@ -1,0 +1,17 @@
+local function update_round_text(new_round)
+	local round_text = gui.get_node("round")
+	gui.set_text(round_text, 'Round: ' .. new_round)
+end
+
+local function update_player_hp_text(hp, max_hp)
+	local hp_text = gui.get_node("hp")
+	gui.set_text(hp_text, 'HP: ' .. hp .. '/' .. max_hp)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("update_round_text") then
+		update_round_text(message.new_round)
+	elseif message_id == hash("update_player_hp_text") then
+		update_player_hp_text(message.hp, message.max_hp)
+	end
+end
