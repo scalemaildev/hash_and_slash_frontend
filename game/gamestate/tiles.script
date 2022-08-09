@@ -1,3 +1,4 @@
+local Gamestate = require "game.gamestate.gamestate"
 local Geo = require "game.helpers.geo"
 
 local tiles = {}

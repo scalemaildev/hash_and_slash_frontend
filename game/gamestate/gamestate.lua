@@ -6,7 +6,8 @@ Gamestate = {
 		hp = 0,
 		max_hp = 0
 	},
-	vis = {}
+	vis = {},
+	messages = {}
 }
 
 -- Room ID
@@ -16,6 +17,15 @@ end
 
 function Gamestate.get_room_id()
 	return Gamestate.room_id
+end
+
+-- Recalculate FoV
+function Gamestate.set_recalculate()
+	Gamestate.recalculate = true
+end
+
+function Gamestate.get_recalculate()
+	return Gamestate.recalculate
 end
 
 -- Round
@@ -45,6 +55,10 @@ end
 
 function Gamestate.clear_vis_pos(key)
 	Gamestate.vis[key] = nil
+end
+
+function Gamestate.get_vis_pos(pos)
+	return Gamestate.vis[pos]
 end
 
 return Gamestate

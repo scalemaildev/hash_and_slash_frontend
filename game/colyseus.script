@@ -7,6 +7,8 @@ local client
 local room
 
 local function join_room(room_id)
+	local recalculate = Gamestate.get_recalculate()
+	
 	client:join_by_id(room_id, { isObserver = false }, function(err, _room)
 		if (err ~= nil) then
 			print("join error: " .. err)
@@ -16,15 +18,22 @@ local function join_room(room_id)
 		room = _room
 
 		-- Visible Positions
-		room.state.vis['on_add'] = function (_, key)
-			Gamestate.see_vis_pos(key)
-			msg.post("/game#tiles", "untint_tile", { pos = key })
+		room.state.vis['on_add'] = function (val, key)
+			if val == true then
+				Gamestate.see_vis_pos(key)
+				msg.post("/game#tiles", "untint_tile", { pos = key })
+			else
+				Gamestate.unsee_vis_pos(key)
+				msg.post("/game#tiles", "tint_tile", { pos = key })
+			end
 		end
 
 		room.state.vis['on_change'] = function (val, key)
 			if val == true then
+				Gamestate.see_vis_pos(key)
 				msg.post("/game#tiles", "untint_tile", { pos = key })
 			else
+				Gamestate.unsee_vis_pos(key)
 				msg.post("/game#tiles", "tint_tile", { pos = key })
 			end
 		end
@@ -36,6 +45,13 @@ local function join_room(room_id)
 		-- Known Tiles
 		room.state.tiles['on_add'] = function (tile, _)
 			msg.post("/game#tiles", "create_tile", { pos = tile.pos, tile_type = tile.symbol })
+
+			-- force recalc on reloading/observing
+			local _pos = tostring(tile.pos)
+			local vis = Gamestate.get_vis_pos(_pos)
+			if vis ~= true then
+				msg.post("/game#tiles", "tint_tile", { pos = tile.pos })
+			end
 		end
 		
 		room.state.tiles['on_remove'] = function (tile, _)
@@ -76,6 +92,11 @@ local function join_room(room_id)
 
 		room.state.actors['on_remove'] = function (actor, _)
 			msg.post("/game#actors", "remove_actor", { id = actor.id })
+		end
+
+		-- Messages
+		room.state.messages['on_add'] = function (message, _)
+			-- todo
 		end
 
 		-- General State Updates

@@ -1,7 +1,11 @@
 script: "/game/gui/game.gui_script"
 fonts {
-  name: "agave"
-  font: "/assets/fonts/agave.font"
+  name: "agave_24_ol"
+  font: "/assets/fonts/agave_24_ol.font"
+}
+fonts {
+  name: "agave_16"
+  font: "/assets/fonts/agave_16.font"
 }
 background_color {
   x: 0.0
@@ -43,7 +47,7 @@ nodes {
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
   text: "HP:"
-  font: "agave"
+  font: "agave_24_ol"
   id: "hp"
   xanchor: XANCHOR_LEFT
   yanchor: YANCHOR_TOP
@@ -106,7 +110,7 @@ nodes {
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
   text: "Round:"
-  font: "agave"
+  font: "agave_24_ol"
   id: "round"
   xanchor: XANCHOR_LEFT
   yanchor: YANCHOR_TOP
