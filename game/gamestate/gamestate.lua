@@ -1,7 +1,7 @@
 Gamestate = {
 	room_id = "", -- colyseus room, not hcs topic
 	round = 0,
-	game_status = 'IN_PROGRESS',
+	game_result = 'IN_PROGRESS',
 	player_stats = {
 		hp = 0,
 		max_hp = 0
@@ -37,8 +37,12 @@ function Gamestate.get_round()
 end
 
 -- Game Status
-function Gamestate.set_game_status(new_status)
-	Gamestate.game_status = new_status
+function Gamestate.set_game_result(new_status)
+	Gamestate.game_result = new_status
+end
+
+function Gamestate.get_game_result()
+	return Gamestate.game_result
 end
 
 -- Stats

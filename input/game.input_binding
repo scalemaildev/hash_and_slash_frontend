@@ -1,7 +1,3 @@
-key_trigger {
-  input: KEY_BACKSPACE
-  action: "backspace"
-}
 mouse_trigger {
   input: MOUSE_BUTTON_2
   action: "touch"

@@ -1,24 +1,20 @@
-go.property("fling_enabled", true)
-go.property("fling_distance_threshold", 2000)	-- pixels per second
-
 local WIDTH = sys.get_config("display.width")
 local HEIGHT = sys.get_config("display.height")
-local TILE_SIZE = 64
 
 function init(self)
-	msg.post("camera", "acquire_camera_focus")
+	msg.post("/camera", "acquire_camera_focus")
 	msg.post(".", "acquire_input_focus")
-	self.fling = vmath.vector3()
+	
 	-- TODO get 'bounds' from the tiles script instead
 	-- local x, y, w, h = tilemap.get_bounds("map#tilemap")
-	x = x - 1
-	y = y - 1
-	local pos = go.get_position("map#tilemap")
-	self.bounds = vmath.vector4(pos.x + (x * TILE_SIZE), pos.y + (y * TILE_SIZE), pos.x + ((x + w) * TILE_SIZE), pos.y + ((y + h) * TILE_SIZE))
+	-- x = x - 1
+	-- y = y - 1
+	-- local pos = go.get_position("map#tilemap")
+	-- self.bounds = vmath.vector4(pos.x + (x * TILE_SIZE), pos.y + (y * TILE_SIZE), pos.x + ((x + w) * TILE_SIZE), pos.y + ((y + h) * TILE_SIZE))
 end
 
 function final(self)
-	msg.post("camera", "release_camera_focus")
+	msg.post("/camera", "release_camera_focus")
 	msg.post(".", "release_input_focus")
 end
 
@@ -34,15 +30,6 @@ local function limit(self, pos)
 	return pos
 end
 
-function update(self, dt)
-	-- get new bounds
-	if not self.drag and self.fling_enabled then
-		local pos = go.get_position() + self.fling
-		go.set_position(limit(self, pos))
-		self.fling = vmath.lerp(0.1, self.fling, vmath.vector3()) 
-	end
-end
-
 function on_input(self, action_id, action)
 	if action.pressed then
 		self.drag = true
@@ -51,18 +38,6 @@ function on_input(self, action_id, action)
 		self.camera_pos = go.get_position()
 	elseif action.released then
 		self.drag = false
-
-		if self.fling_enabled then
-			local released_time = socket.gettime()
-			local released_pos = vmath.vector3(action.x, action.y, 0)
-			local delta_time = released_time - self.pressed_time
-			local distance = vmath.length(released_pos - self.pressed_pos)
-			local velocity = distance / delta_time
-			if velocity >= self.fling_distance_threshold then
-				local direction = vmath.normalize(self.pressed_pos - released_pos)
-				self.fling = direction * velocity * 0.02
-			end
-		end
 	end
 
 	if self.drag then

@@ -25,8 +25,10 @@ local function join_room(room_id)
 					Gamestate.set_round(change.value)
 					msg.post("/game#gui", "update_round_text", { new_round = change.value })
 				elseif change.field == "gameResult" then
-					Gamestate.set_game_status(change.value)
-					-- TODO now display either a victory or defeat screen and cancel inputs
+					if change.value == "VICTORY" or change.value == "DEFEAT" then
+						Gamestate.set_game_result(change.value)
+						msg.post("main:/main#main", "end_game")
+					end
 				end
 			end
 		end

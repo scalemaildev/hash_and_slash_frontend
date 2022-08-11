@@ -6,10 +6,23 @@ local function load_game(self)
 	msg.post("main#game_proxy", "enable")
 end
 
+local function show_game_over_screen(self)
+	msg.post("main#game_proxy", "unload")
+	
+	msg.post("main#splash_proxy", "load")
+	msg.post("main#splash_proxy", "enable")
+end
+
 local function jstodef_listener(self, message_id, message)
 	if message_id == "join_game" then
 		Gamestate.set_room_id(message.room_id)
 		load_game(self)
+	end
+end
+
+function on_message(self, message_id, message)
+	if message_id == hash("end_game") then
+		show_game_over_screen(self)
 	end
 end
 
