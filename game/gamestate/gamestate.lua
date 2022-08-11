@@ -6,8 +6,7 @@ Gamestate = {
 		hp = 0,
 		max_hp = 0
 	},
-	vis = {},
-	messages = {}
+	vis = {}
 }
 
 -- Room ID
@@ -31,6 +30,10 @@ end
 -- Round
 function Gamestate.set_round(count)
 	Gamestate.round = count
+end
+
+function Gamestate.get_round()
+	return Gamestate.round
 end
 
 -- Game Status

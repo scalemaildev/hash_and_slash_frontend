@@ -1,5 +1,6 @@
 local ColyseusClient = require "colyseus.client"
 local Gamestate = require "game.gamestate.gamestate"
+local MessageReel = require "game.gamestate.message_reel"
 
 local debug
 
@@ -17,6 +18,19 @@ local function join_room(room_id)
 
 		room = _room
 
+		-- General State Updates
+		room.state['on_change'] = function (changes)
+			for _, change in pairs(changes) do
+				if change.field == "round" then
+					Gamestate.set_round(change.value)
+					msg.post("/game#gui", "update_round_text", { new_round = change.value })
+				elseif change.field == "gameResult" then
+					Gamestate.set_game_status(change.value)
+					-- TODO now display either a victory or defeat screen and cancel inputs
+				end
+			end
+		end
+		
 		-- Visible Positions
 		room.state.vis['on_add'] = function (val, key)
 			if val == true then
@@ -96,20 +110,8 @@ local function join_room(room_id)
 
 		-- Messages
 		room.state.messages['on_add'] = function (message, _)
-			-- todo
-		end
-
-		-- General State Updates
-		room.state['on_change'] = function (changes)
-			for _, change in pairs(changes) do
-				if change.field == "round" then
-					Gamestate.set_round(change.value)
-					msg.post("/game#gui", "update_round_text", { new_round = change.value })
-				elseif change.field == "gameResult" then
-					Gamestate.set_game_status(change.value)
-					-- TODO now display either a victory or defeat screen and cancel inputs
-				end
-			end
+			MessageReel.append_message(message)
+			msg.post("/game#gui", "update_message_reel")
 		end
 
 		room:on_message("setGameActive", function(message)

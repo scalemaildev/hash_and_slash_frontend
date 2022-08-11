@@ -1,3 +1,11 @@
+local richtext = require "richtext.richtext"
+local color = require "richtext.color"
+local tags = require "richtext.tags"
+local Gamestate = require "game.gamestate.gamestate"
+local MessageReel = require "game.gamestate.message_reel"
+
+local message_nodes = {}
+
 local function update_round_text(new_round)
 	local round_text = gui.get_node("round")
 	gui.set_text(round_text, 'Round: ' .. new_round)
@@ -8,10 +16,53 @@ local function update_player_hp_text(hp, max_hp)
 	gui.set_text(hp_text, 'HP: ' .. hp .. '/' .. max_hp)
 end
 
+local function create_richtext_message(key, message)
+	local _y = 130 + (key * 20)
+	local settings = {
+		position = vmath.vector3(695, _y, 0),
+		outline = vmath.vector4(0, 0, 0, 1),
+		align = richtext.ALIGN_CENTER,
+		valign = richtext.VALIGN_BOTTOM,
+		width = 300,
+		combine_words = true
+	}
+
+	local rich_message = richtext.create(message, "agave_16_ol", settings)
+
+	for _, message in ipairs(rich_message) do
+		table.insert(message_nodes, message.node)
+	end
+end
+
+local function update_message_reel()
+	local messages = MessageReel.get()
+
+	-- remove pre-existing message nodes
+	for key, node in ipairs(message_nodes) do
+		gui.delete_node(node)
+		message_nodes[key] = nil
+	end
+
+	-- insert the new ones
+	for i=1, #messages do
+		local key = #messages + 1 - i
+		local message = messages[key]
+		local text = message.text
+
+		if message.round ~= (Gamestate.get_round() - 1) then
+			text = "<color=grey>" .. text .. "</color>"
+		end
+		
+		local message_nodes = create_richtext_message(i, text)
+	end
+end
+
 function on_message(self, message_id, message, sender)
 	if message_id == hash("update_round_text") then
 		update_round_text(message.new_round)
 	elseif message_id == hash("update_player_hp_text") then
 		update_player_hp_text(message.hp, message.max_hp)
+	elseif message_id == hash("update_message_reel") then
+		update_message_reel()
 	end
 end
