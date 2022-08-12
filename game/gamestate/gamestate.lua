@@ -6,7 +6,13 @@ Gamestate = {
 		hp = 0,
 		max_hp = 0
 	},
-	vis = {}
+	vis = {},
+	bounds = {
+		x = 0,
+		y = 0,
+		w = 0,
+		h = 0
+	}
 }
 
 -- Room ID
@@ -66,6 +72,27 @@ end
 
 function Gamestate.get_vis_pos(pos)
 	return Gamestate.vis[pos]
+end
+
+-- Bounds
+function Gamestate.set_bound_x(x)
+	Gamestate.bounds.x = x
+end
+
+function Gamestate.set_bound_y(y)
+	Gamestate.bounds.y = y
+end
+
+function Gamestate.set_bound_w(w)
+	Gamestate.bounds.w = w
+end
+
+function Gamestate.set_bound_h(h)
+	Gamestate.bounds.h = h
+end
+
+function Gamestate.get_bounds()
+	return Gamestate.bounds.x, Gamestate.bounds.y, Gamestate.bounds.w, Gamestate.bounds.h
 end
 
 return Gamestate

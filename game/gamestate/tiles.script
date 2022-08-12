@@ -22,6 +22,12 @@ function create_tile(pos, tile_type)
 		sprite.play_flipbook(tile, "stairs")
 	end
 
+	-- update bounds
+	if coord.x < Gamestate.bounds.x or Gamestate.bounds.x == 0 then Gamestate.set_bound_x(coord.x) end
+	if coord.y < Gamestate.bounds.y or Gamestate.bounds.y == 0 then Gamestate.set_bound_y(coord.y) end
+	if coord.x > Gamestate.bounds.w or Gamestate.bounds.w == 0 then Gamestate.set_bound_w(coord.x) end
+	if coord.y > Gamestate.bounds.h or Gamestate.bounds.h == 0 then Gamestate.set_bound_h(coord.y) end
+
 	tiles[_pos] = tile
 end
 
@@ -67,6 +73,10 @@ function remove_tile(pos)
 	tiles[_pos] = nil
 end
 
+function get_bounds()
+	return bounds.x, bounds.y, bounds.w, bounds.h
+end
+
 function on_message(self, message_id, message)
 	if message_id == hash("create_tile") then
 		create_tile(message.pos, message.tile_type)
@@ -78,5 +88,7 @@ function on_message(self, message_id, message)
 		untint_tile(message.pos)
 	elseif message_id == hash("corpsify_tile") then
 		corpsify_tile(message.pos)
+	elseif message_id == hash("get_bounds") then
+		return get_bounds()
 	end
 end

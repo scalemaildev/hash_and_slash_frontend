@@ -27,6 +27,8 @@ function on_message(self, message_id, message)
 end
 
 function init(self)
+	msg.post(".", "acquire_input_focus")
+	
 	debug = sys.get_engine_info().is_debug
 
 	if debug then
