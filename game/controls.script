@@ -17,7 +17,6 @@ function set_bounds(self)
 	x = x - 1
 	y = y - 1
 	self.bounds = vmath.vector4(x * 22, y * 33, w * 22, h * 33)
-	-- self.bounds = vmath.vector4(pos.x + (x * TILE_SIZE), pos.y + (y * TILE_SIZE), pos.x + ((x + w) * TILE_SIZE), pos.y + ((y + h) * TILE_SIZE))
 end
 
 function update(self)
