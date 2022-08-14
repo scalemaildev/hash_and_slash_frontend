@@ -28,7 +28,7 @@ local function join_room(room_id)
 				elseif change.field == "gameResult" then
 					if change.value == "VICTORY" or change.value == "DEFEAT" then
 						Gamestate.set_game_result(change.value)
-						msg.post("main:/main#main", "end_game")
+						msg.post("main:/main#main", "goto_end_splash")
 					end
 				end
 			end
