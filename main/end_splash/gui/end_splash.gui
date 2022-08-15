@@ -1,4 +1,4 @@
-script: "/end_splash/gui/end_splash.gui_script"
+script: "/main/end_splash/gui/end_splash.gui_script"
 fonts {
   name: "agave_32"
   font: "/assets/fonts/agave_32.font"

@@ -4,7 +4,7 @@ embedded_instances {
   id: "screen"
   data: "components {\n"
   "  id: \"screen\"\n"
-  "  component: \"/end_splash/gui/end_splash.gui\"\n"
+  "  component: \"/main/end_splash/gui/end_splash.gui\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

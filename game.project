@@ -1,5 +1,5 @@
 [bootstrap]
-main_collection = /main/main.collectionc
+main_collection = /main/controller.collectionc
 render = /orthographic/render/orthographic.renderc
 
 [display]
@@ -14,13 +14,14 @@ payment_pointer = YOUR_PAYMENT_POINTER
 
 [project]
 title = Hash & Slash Frontend
-version = 0.1
+version = 0.2-prealpha5
 developer = John Conway
 dependencies#0 = https://github.com/colyseus/colyseus-defold/archive/0.14.1.zip
 dependencies#1 = https://github.com/defold/extension-websocket/archive/refs/tags/3.0.0.zip
 dependencies#2 = https://github.com/britzl/defold-orthographic/archive/refs/tags/3.2.0.zip
-dependencies#3 = https://github.com/AGulev/jstodef/archive/refs/tags/1.4.0.zip
-dependencies#4 = https://github.com/britzl/defold-richtext/archive/master.zip
+dependencies#3 = https://github.com/britzl/defold-richtext/archive/refs/tags/5.19.0.zip
+dependencies#4 = https://github.com/Insality/druid/archive/refs/tags/0.9.0.zip
+dependencies#5 = https://github.com/britzl/monarch/archive/refs/tags/3.7.0.zip
 
 [factory]
 max_count = 25000

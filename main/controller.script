@@ -1,0 +1,50 @@
+local Gamestate = require "game.gamestate.gamestate"
+local debug
+
+local function hide_screen(url)
+	if url then
+		msg.post(url, "hide")
+	end
+end
+
+local function show_screen(self, url, message)
+	hide_screen(self.current_screen)
+	self.current_screen = url
+	msg.post(self.current_screen, "show", message or {})
+end
+
+local function goto_game(self)
+	msg.post("main#game_proxy", "load")
+	msg.post("controller#game_proxy", "enable")
+end
+
+local function goto_end_splash(self)
+	msg.post("controller#game_proxy", "unload")
+	
+	msg.post("controller#end_splash_proxy", "load")
+	msg.post("controller#end_splash_proxy", "enable")
+end
+
+function on_message(self, message_id, message)
+	if message_id == hash("goto_game") then
+		goto_game(self)
+	elseif message_id == hash("show_start_menu") then
+		show_screen(self, "start_menu")
+	elseif message_id == hash("show_new_game_menu") then
+		show_screen(self, "new_game_menu")
+	elseif message_id == hash("goto_end_splash") then
+		goto_end_splash(self)
+	end
+end
+
+function init(self)
+	debug = sys.get_engine_info().is_debug
+
+	if debug then
+		print("DEBUG MODE")
+	end
+
+	hide_screen(msg.url("new_game_menu"))
+	hide_screen(msg.url("start_menu"))
+	show_screen(self, msg.url("start_menu"))
+end
