@@ -1,1 +1,2 @@
---
+local ColyseusClient = require "colyseus.client"
+local Gamestate = require "game.gamestate.gamestate"
