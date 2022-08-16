@@ -16,6 +16,7 @@ end
 
 function on_message(self, message_id, message)
 	if message_id == hash("goto_game") then
+		monarch.hide(hash("background"))
 		goto_game(self)
 	elseif message_id == hash("show_background") then
 		monarch.show(hash("background"), { no_stack = true })

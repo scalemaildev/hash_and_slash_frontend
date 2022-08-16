@@ -2,6 +2,8 @@ local monarch = require "monarch.monarch"
 
 function init(self)
     msg.post(".", "acquire_input_focus")
+    local v_node = gui.get_node("version")
+    gui.set_text(v_node, sys.get_config("project.version"))
 end
 
 function final(self)
