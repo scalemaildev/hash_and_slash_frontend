@@ -1,4 +1,9 @@
+local druid = require "druid.druid"
 local monarch = require "monarch.monarch"
+
+function goto_menu()
+    monarch.show("new_game_menu")
+end
 
 function on_input(self, action_id, action)
     if action.pressed and action_id == hash("key_n") then
@@ -6,6 +11,14 @@ function on_input(self, action_id, action)
     end
 end
 
+function setup_buttons(self)
+    self.druid:new_button("new_game", goto_menu)
+end
+
 function init(self)
     msg.post(".", "acquire_input_focus")
+
+    self.druid = druid.new(self)
+
+    setup_buttons(self)
 end
