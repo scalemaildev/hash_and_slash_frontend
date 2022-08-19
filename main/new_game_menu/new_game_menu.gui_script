@@ -1,27 +1,22 @@
-local druid = require "druid.druid"
+local gooey = require "gooey.gooey"
 local monarch = require "monarch.monarch"
 
 function on_input(self, action_id, action)
-    if action.pressed and action_id == hash("key_esc") then
+    -- KEYPRESSES
+    if action.pressed and action_id == hash("esc") then
         monarch.show("start_menu")
-    else
-        return self.druid:on_input(action_id, action)
     end
-end
 
-function update(self, dt)
-    self.druid:update(dt)
-end
+    -- GOOEY UI
+    local group = gooey.group("new_game_menu_group", function()
+        gooey.input("password_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 })
 
-function final(self)
-    self.druid:final()
+        gooey.input("repassword_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 })
+    end)
+
+    return group.consumed
 end
 
 function init(self)
-    msg.post(".", "acquire_input_focus")
-    
-    self.druid = druid.new(self)
-
-    password = self.druid:new_input("password_button", "password_text", gui.KEYBOARD_TYPE_PASSWORD)
-    repassword = self.druid:new_input("repassword_button", "repassword_text", gui.KEYBOARD_TYPE_PASSWORD)
+    gooey.acquire_input()
 end

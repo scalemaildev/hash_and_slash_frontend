@@ -7,6 +7,127 @@ local debug
 local client
 local room
 
+local function handle_room_updates()
+	-- General State Updates
+	room.state['on_change'] = function (changes)
+		for _, change in pairs(changes) do
+			if change.field == "round" then
+				Gamestate.set_round(change.value)
+				msg.post("/game#gui", "update_round_text", { new_round = change.value })
+				msg.post("/game#gui", "update_message_reel")
+			elseif change.field == "gameResult" then
+				if change.value == "VICTORY" or change.value == "DEFEAT" then
+					Gamestate.set_game_result(change.value)
+					msg.post("main:/main#main", "goto_end_splash")
+				end
+			end
+		end
+	end
+
+	-- Visible Positions
+	room.state.vis['on_add'] = function (val, key)
+		if val == true then
+			Gamestate.see_vis_pos(key)
+			msg.post("/game#tiles", "untint_tile", { pos = key })
+		else
+			Gamestate.unsee_vis_pos(key)
+			msg.post("/game#tiles", "tint_tile", { pos = key })
+		end
+	end
+
+	room.state.vis['on_change'] = function (val, key)
+		if val == true then
+			Gamestate.see_vis_pos(key)
+			msg.post("/game#tiles", "untint_tile", { pos = key })
+		else
+			Gamestate.unsee_vis_pos(key)
+			msg.post("/game#tiles", "tint_tile", { pos = key })
+		end
+	end
+
+	room.state.vis['on_remove'] = function (_, key)
+		Gamestate.clear_vis_pos(key)
+	end
+
+	-- Known Tiles
+	room.state.tiles['on_add'] = function (tile, _)
+		msg.post("/game#tiles", "create_tile", { pos = tile.pos, tile_type = tile.symbol })
+
+		-- force recalc on reloading/observing
+		local _pos = tostring(tile.pos)
+		local vis = Gamestate.get_vis_pos(_pos)
+		if vis ~= true then
+			msg.post("/game#tiles", "tint_tile", { pos = tile.pos })
+		end
+	end
+
+	room.state.tiles['on_remove'] = function (tile, _)
+		msg.post("/game#tiles", "remove_tile", { pos = tile.pos })
+	end
+
+	-- Items
+	room.state.items['on_add'] = function (item, _)
+		msg.post("/game#tiles", "corpsify_tile", { pos = item.pos })
+	end
+
+	-- Actors
+	room.state.actors['on_add'] = function (actor, _)
+		msg.post("/game#actors", "create_actor", { 
+			id = actor.id,
+			pos = actor.pos,
+			actor_type = actor.symbol
+		})
+
+		if actor.id == 0 then
+			Gamestate.update_player_stats(actor.hp, actor.maxHp)
+			msg.post("/game#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
+		end
+	end
+
+	room.state.actors['on_change'] = function (actor, _)
+		msg.post("/game#actors", "update_actor", { 
+			id = actor.id,
+			pos = actor.pos,
+			actor_type = actor.symbol 
+		})
+
+		if actor.id == 0 then
+			Gamestate.update_player_stats(actor.hp, actor.maxHp)
+			msg.post("/game#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
+		end
+	end
+
+	room.state.actors['on_remove'] = function (actor, _)
+		msg.post("/game#actors", "remove_actor", { id = actor.id })
+	end
+
+	-- Messages
+	room.state.messages['on_add'] = function (message, _)
+		MessageReel.append_message(message)
+	end
+
+	room:on_message("setGameActive", function(message)
+		--
+	end)
+
+	room:on_message("updateObsCount", function(message)
+		--
+	end)
+end
+
+local function create_and_join_room()
+	client:create("gameRoom", { isObserver = false }, function(err, _room)
+		if (err ~= nil) then
+			print("join error: " .. err)
+			return
+		end
+
+		room = _room
+
+		handle_room_updates(room)
+	end)
+end
+
 local function join_room(room_id)
 	local recalculate = Gamestate.get_recalculate()
 
@@ -18,111 +139,7 @@ local function join_room(room_id)
 
 		room = _room
 
-		-- General State Updates
-		room.state['on_change'] = function (changes)
-			for _, change in pairs(changes) do
-				if change.field == "round" then
-					Gamestate.set_round(change.value)
-					msg.post("/game#gui", "update_round_text", { new_round = change.value })
-					msg.post("/game#gui", "update_message_reel")
-				elseif change.field == "gameResult" then
-					if change.value == "VICTORY" or change.value == "DEFEAT" then
-						Gamestate.set_game_result(change.value)
-						msg.post("main:/main#main", "goto_end_splash")
-					end
-				end
-			end
-		end
-
-		-- Visible Positions
-		room.state.vis['on_add'] = function (val, key)
-			if val == true then
-				Gamestate.see_vis_pos(key)
-				msg.post("/game#tiles", "untint_tile", { pos = key })
-			else
-				Gamestate.unsee_vis_pos(key)
-				msg.post("/game#tiles", "tint_tile", { pos = key })
-			end
-		end
-
-		room.state.vis['on_change'] = function (val, key)
-			if val == true then
-				Gamestate.see_vis_pos(key)
-				msg.post("/game#tiles", "untint_tile", { pos = key })
-			else
-				Gamestate.unsee_vis_pos(key)
-				msg.post("/game#tiles", "tint_tile", { pos = key })
-			end
-		end
-
-		room.state.vis['on_remove'] = function (_, key)
-			Gamestate.clear_vis_pos(key)
-		end
-
-		-- Known Tiles
-		room.state.tiles['on_add'] = function (tile, _)
-			msg.post("/game#tiles", "create_tile", { pos = tile.pos, tile_type = tile.symbol })
-
-			-- force recalc on reloading/observing
-			local _pos = tostring(tile.pos)
-			local vis = Gamestate.get_vis_pos(_pos)
-			if vis ~= true then
-				msg.post("/game#tiles", "tint_tile", { pos = tile.pos })
-			end
-		end
-
-		room.state.tiles['on_remove'] = function (tile, _)
-			msg.post("/game#tiles", "remove_tile", { pos = tile.pos })
-		end
-
-		-- Items
-		room.state.items['on_add'] = function (item, _)
-			msg.post("/game#tiles", "corpsify_tile", { pos = item.pos })
-		end
-
-		-- Actors
-		room.state.actors['on_add'] = function (actor, _)
-			msg.post("/game#actors", "create_actor", { 
-				id = actor.id,
-				pos = actor.pos,
-				actor_type = actor.symbol
-			})
-
-			if actor.id == 0 then
-				Gamestate.update_player_stats(actor.hp, actor.maxHp)
-				msg.post("/game#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
-			end
-		end
-
-		room.state.actors['on_change'] = function (actor, _)
-			msg.post("/game#actors", "update_actor", { 
-				id = actor.id,
-				pos = actor.pos,
-				actor_type = actor.symbol 
-			})
-
-			if actor.id == 0 then
-				Gamestate.update_player_stats(actor.hp, actor.maxHp)
-				msg.post("/game#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
-			end
-		end
-
-		room.state.actors['on_remove'] = function (actor, _)
-			msg.post("/game#actors", "remove_actor", { id = actor.id })
-		end
-
-		-- Messages
-		room.state.messages['on_add'] = function (message, _)
-			MessageReel.append_message(message)
-		end
-
-		room:on_message("setGameActive", function(message)
-			--
-		end)
-
-		room:on_message("updateObsCount", function(message)
-			--
-		end)
+		handle_room_updates(room)
 	end)
 end
 
@@ -132,6 +149,4 @@ function init(self)
 	else
 		client = ColyseusClient.new("wss://dpbtbu.us-east-vin.colyseus.net")
 	end
-	
-	-- todo check connectivity
 end

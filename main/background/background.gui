@@ -4,8 +4,8 @@ fonts {
   font: "/assets/fonts/agave_12.font"
 }
 fonts {
-  name: "agave_200"
-  font: "/assets/fonts/agave_200.font"
+  name: "agave_200_b"
+  font: "/assets/fonts/agave_200_b.font"
 }
 background_color {
   x: 0.0
@@ -112,7 +112,7 @@ nodes {
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
   text: "#&/"
-  font: "agave_200"
+  font: "agave_200_b"
   id: "title"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE

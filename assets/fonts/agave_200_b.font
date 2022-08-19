@@ -1,4 +1,4 @@
-font: "/assets/fonts/agave.ttf"
+font: "/assets/fonts/agave-bold.ttf"
 material: "/builtins/fonts/font.material"
 size: 200
 antialias: 1

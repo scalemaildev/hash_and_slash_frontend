@@ -1,7 +1,7 @@
 script: "/main/new_game_menu/new_game_menu.gui_script"
 fonts {
   name: "agave_200"
-  font: "/assets/fonts/agave_200.font"
+  font: "/assets/fonts/agave_200_b.font"
 }
 fonts {
   name: "agave_16"
@@ -554,7 +554,7 @@ nodes {
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: "error text"
+  text: ""
   font: "agave_16"
   id: "error_text"
   xanchor: XANCHOR_NONE

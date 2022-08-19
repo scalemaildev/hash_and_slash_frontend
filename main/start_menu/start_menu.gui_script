@@ -1,4 +1,4 @@
-local druid = require "druid.druid"
+local gooey = require "gooey.gooey"
 local monarch = require "monarch.monarch"
 
 function goto_menu()
@@ -6,19 +6,21 @@ function goto_menu()
 end
 
 function on_input(self, action_id, action)
-    if action.pressed and action_id == hash("key_n") then
+    -- KEYPRESSES
+    if action.pressed and action_id == hash("n") then
         monarch.show("new_game_menu")
     end
-end
 
-function setup_buttons(self)
-    self.druid:new_button("new_game", goto_menu)
+    -- GOOEY UI
+    local group = gooey.group("start_menu_group", function() 
+        gooey.button("new_game", action_id, action, function()
+            monarch.show("new_game_menu")
+        end)
+    end)
+
+    return group.consumed
 end
 
 function init(self)
-    msg.post(".", "acquire_input_focus")
-
-    self.druid = druid.new(self)
-
-    setup_buttons(self)
+    gooey.acquire_input()
 end

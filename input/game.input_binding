@@ -1,46 +1,46 @@
 key_trigger {
   input: KEY_BACKSPACE
-  action: "key_backspace"
+  action: "backspace"
 }
 key_trigger {
   input: KEY_N
-  action: "key_n"
+  action: "n"
 }
 key_trigger {
   input: KEY_R
-  action: "key_r"
+  action: "r"
 }
 key_trigger {
   input: KEY_O
-  action: "key_o"
+  action: "o"
 }
 key_trigger {
   input: KEY_J
-  action: "key_j"
+  action: "j"
 }
 key_trigger {
   input: KEY_K
-  action: "key_k"
+  action: "k"
 }
 key_trigger {
   input: KEY_U
-  action: "key_u"
+  action: "u"
 }
 key_trigger {
   input: KEY_I
-  action: "key_i"
+  action: "i"
 }
 key_trigger {
   input: KEY_M
-  action: "key_m"
+  action: "m"
 }
 key_trigger {
   input: KEY_SEMICOLON
-  action: "key_semicolon"
+  action: "semicolon"
 }
 key_trigger {
   input: KEY_SPACE
-  action: "key_spacebar"
+  action: "spacebar"
 }
 key_trigger {
   input: KEY_KP_1
@@ -72,15 +72,11 @@ key_trigger {
 }
 key_trigger {
   input: KEY_ESC
-  action: "key_esc"
-}
-key_trigger {
-  input: KEY_BACK
-  action: "key_back"
+  action: "esc"
 }
 key_trigger {
   input: KEY_ENTER
-  action: "key_enter"
+  action: "enter"
 }
 mouse_trigger {
   input: MOUSE_BUTTON_1

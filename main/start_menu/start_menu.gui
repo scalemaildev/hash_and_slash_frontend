@@ -1,7 +1,7 @@
 script: "/main/start_menu/start_menu.gui_script"
 fonts {
   name: "agave_200"
-  font: "/assets/fonts/agave_200.font"
+  font: "/assets/fonts/agave_200_b.font"
 }
 fonts {
   name: "agave_32"
@@ -16,7 +16,7 @@ background_color {
 nodes {
   position {
     x: 400.0
-    y: 214.0
+    y: 209.0
     z: 0.0
     w: 1.0
   }
@@ -75,11 +75,13 @@ nodes {
   text_leading: 1.0
   text_tracking: 0.0
   custom_type: 0
+  enabled: true
+  visible: true
 }
 nodes {
   position {
     x: 400.0
-    y: 164.0
+    y: 159.0
     z: 0.0
     w: 1.0
   }
@@ -138,11 +140,13 @@ nodes {
   text_leading: 1.0
   text_tracking: 0.0
   custom_type: 0
+  enabled: true
+  visible: true
 }
 nodes {
   position {
     x: 400.0
-    y: 114.0
+    y: 109.0
     z: 0.0
     w: 1.0
   }
@@ -201,6 +205,8 @@ nodes {
   text_leading: 1.0
   text_tracking: 0.0
   custom_type: 0
+  enabled: true
+  visible: true
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT
