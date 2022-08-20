@@ -5,18 +5,3 @@ function init(self)
     local v_node = gui.get_node("version")
     gui.set_text(v_node, sys.get_config("project.version"))
 end
-
-function final(self)
-end
-
-function update(self, dt)
-end
-
-function on_message(self, message_id, message, sender)
-end
-
-function on_input(self, action_id, action)
-end
-
-function on_reload(self)
-end

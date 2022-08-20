@@ -2,8 +2,6 @@ local ColyseusClient = require "colyseus.client"
 local Gamestate = require "game.gamestate.gamestate"
 local MessageReel = require "game.gamestate.message_reel"
 
-local debug
-
 local client
 local room
 
@@ -13,12 +11,12 @@ local function handle_room_updates()
 		for _, change in pairs(changes) do
 			if change.field == "round" then
 				Gamestate.set_round(change.value)
-				msg.post("/game#gui", "update_round_text", { new_round = change.value })
-				msg.post("/game#gui", "update_message_reel")
+				msg.post("game:/controller#gui", "update_round_text", { new_round = change.value })
+				msg.post("game:/controller#gui", "update_message_reel")
 			elseif change.field == "gameResult" then
 				if change.value == "VICTORY" or change.value == "DEFEAT" then
 					Gamestate.set_game_result(change.value)
-					msg.post("main:/main#main", "goto_end_splash")
+					msg.post("controller:/controller#controller", "goto_end_splash")
 				end
 			end
 		end
@@ -28,20 +26,20 @@ local function handle_room_updates()
 	room.state.vis['on_add'] = function (val, key)
 		if val == true then
 			Gamestate.see_vis_pos(key)
-			msg.post("/game#tiles", "untint_tile", { pos = key })
+			msg.post("game:/controller#tiles", "untint_tile", { pos = key })
 		else
 			Gamestate.unsee_vis_pos(key)
-			msg.post("/game#tiles", "tint_tile", { pos = key })
+			msg.post("game:/controller#tiles", "tint_tile", { pos = key })
 		end
 	end
 
 	room.state.vis['on_change'] = function (val, key)
 		if val == true then
 			Gamestate.see_vis_pos(key)
-			msg.post("/game#tiles", "untint_tile", { pos = key })
+			msg.post("game:/controller#tiles", "untint_tile", { pos = key })
 		else
 			Gamestate.unsee_vis_pos(key)
-			msg.post("/game#tiles", "tint_tile", { pos = key })
+			msg.post("game:/controller#tiles", "tint_tile", { pos = key })
 		end
 	end
 
@@ -51,28 +49,28 @@ local function handle_room_updates()
 
 	-- Known Tiles
 	room.state.tiles['on_add'] = function (tile, _)
-		msg.post("/game#tiles", "create_tile", { pos = tile.pos, tile_type = tile.symbol })
+		msg.post("game:/controller#tiles", "create_tile", { pos = tile.pos, tile_type = tile.symbol })
 
 		-- force recalc on reloading/observing
 		local _pos = tostring(tile.pos)
 		local vis = Gamestate.get_vis_pos(_pos)
 		if vis ~= true then
-			msg.post("/game#tiles", "tint_tile", { pos = tile.pos })
+			msg.post("game:/controller#tiles", "tint_tile", { pos = tile.pos })
 		end
 	end
 
 	room.state.tiles['on_remove'] = function (tile, _)
-		msg.post("/game#tiles", "remove_tile", { pos = tile.pos })
+		msg.post("game:/controller#tiles", "remove_tile", { pos = tile.pos })
 	end
 
 	-- Items
 	room.state.items['on_add'] = function (item, _)
-		msg.post("/game#tiles", "corpsify_tile", { pos = item.pos })
+		msg.post("game:/controller#tiles", "corpsify_tile", { pos = item.pos })
 	end
 
 	-- Actors
 	room.state.actors['on_add'] = function (actor, _)
-		msg.post("/game#actors", "create_actor", { 
+		msg.post("game:/controller#actors", "create_actor", { 
 			id = actor.id,
 			pos = actor.pos,
 			actor_type = actor.symbol
@@ -80,12 +78,12 @@ local function handle_room_updates()
 
 		if actor.id == 0 then
 			Gamestate.update_player_stats(actor.hp, actor.maxHp)
-			msg.post("/game#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
+			msg.post("game:/controller#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
 		end
 	end
 
 	room.state.actors['on_change'] = function (actor, _)
-		msg.post("/game#actors", "update_actor", { 
+		msg.post("game:/controller#actors", "update_actor", { 
 			id = actor.id,
 			pos = actor.pos,
 			actor_type = actor.symbol 
@@ -93,12 +91,12 @@ local function handle_room_updates()
 
 		if actor.id == 0 then
 			Gamestate.update_player_stats(actor.hp, actor.maxHp)
-			msg.post("/game#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
+			msg.post("game:/controller#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
 		end
 	end
 
 	room.state.actors['on_remove'] = function (actor, _)
-		msg.post("/game#actors", "remove_actor", { id = actor.id })
+		msg.post("game:/controller#actors", "remove_actor", { id = actor.id })
 	end
 
 	-- Messages
@@ -106,47 +104,76 @@ local function handle_room_updates()
 		MessageReel.append_message(message)
 	end
 
+	room:on_message("startNewGame", function(message)
+		if message.success == true then
+			msg.post("/controller#controller", "goto_game")
+		else
+			-- TODO handle failure
+		end
+	end)
+
 	room:on_message("setGameActive", function(message)
-		--
+		-- TODO
 	end)
 
 	room:on_message("updateObsCount", function(message)
-		--
+		-- TODO
 	end)
 end
 
-local function create_and_join_room()
+local function create_new_game(password)
 	client:create("gameRoom", { isObserver = false }, function(err, _room)
 		if (err ~= nil) then
+			-- TODO display error in GUI
 			print("join error: " .. err)
 			return
 		end
 
 		room = _room
 
-		handle_room_updates(room)
+		room:send("startNewGame", { password = password })
+
+		handle_room_updates()
 	end)
 end
 
-local function join_room(room_id)
+-- TODO reload game from save
+
+local function observe_game(room_id)
 	local recalculate = Gamestate.get_recalculate()
 
-	client:join_by_id(room_id, { isObserver = false }, function(err, _room)
+	client:join_by_id(room_id, { isObserver = true }, function(err, _room)
 		if (err ~= nil) then
+			-- TODO display error in GUI
 			print("join error: " .. err)
 			return
 		end
 
 		room = _room
 
-		handle_room_updates(room)
+		handle_room_updates()
 	end)
+end
+
+local function clear_game()
+	room = nil
+	Gamestate.reset()
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("create_new_game") then
+		local room_id = create_new_game(message.password)
+	elseif message_id == hash("join_game") then
+		local room_id = join_room(message.room_id)
+	end
 end
 
 function init(self)
-	if debug then
+	if sys.get_engine_info().is_debug then
+		pprint('LOCAL SERVER')
 		client = ColyseusClient.new("ws://localhost:2567")
 	else
+		pprint('COLYSEUS ARENA SERVER')
 		client = ColyseusClient.new("wss://dpbtbu.us-east-vin.colyseus.net")
 	end
 end

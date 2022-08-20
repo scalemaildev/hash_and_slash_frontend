@@ -90,6 +90,10 @@ mouse_trigger {
   input: MOUSE_WHEEL_DOWN
   action: "scroll_down"
 }
+mouse_trigger {
+  input: MOUSE_BUTTON_2
+  action: "right_click"
+}
 touch_trigger {
   input: TOUCH_MULTI
   action: "multitouch"

@@ -38,3 +38,6 @@ max_count = 25000
 [input]
 game_binding = /input/game.input_bindingc
 
+[physics]
+world_count = 10
+

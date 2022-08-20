@@ -126,7 +126,7 @@ embedded_instances {
   }
 }
 embedded_instances {
-  id: "game"
+  id: "controller"
   data: "components {\n"
   "  id: \"tiles\"\n"
   "  component: \"/game/gamestate/tiles.script\"\n"

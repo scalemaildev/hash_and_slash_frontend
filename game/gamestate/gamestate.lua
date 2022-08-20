@@ -1,7 +1,7 @@
 Gamestate = {
 	room_id = "", -- colyseus room, not hcs topic
 	round = 0,
-	game_result = 'IN_PROGRESS',
+	game_result = "IN_PROGRESS",
 	player_stats = {
 		hp = 0,
 		max_hp = 0
@@ -14,6 +14,24 @@ Gamestate = {
 		h = 0
 	}
 }
+
+-- General
+function Gamestate.reset()
+	Gamestate.room_id = ""
+	Gamestate.round = 0
+	Gamestate.game_result = "IN_PROGRESS"
+	Gamestate.player_stats.hp = 0
+	Gamestate.play_stats.max_hp = 0
+
+	for k,_ in pairs(Gamestate.vis) do
+		Gamestate.clear_vis_pos(k)
+	end
+
+	Gamestate.bounds.x = 0
+	Gamestate.bounds.y = 0
+	Gamestate.bounds.w = 0
+	Gamestate.bounds.h = 0
+end
 
 -- Room ID
 function Gamestate.set_room_id(room_id)

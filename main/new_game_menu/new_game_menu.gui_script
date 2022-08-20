@@ -1,6 +1,29 @@
 local gooey = require "gooey.gooey"
 local monarch = require "monarch.monarch"
 
+local error_node
+local pwd
+local rwpd
+
+function validate_password(password)
+    if pwd.text == "" or rpwd.text == "" then
+        gui.set_text(error_node, "Fill out both password fields.")
+        return false
+    end
+    
+    if pwd.text ~= rpwd.text then
+        gui.set_text(error_node, "Passwords do not match.")
+        return false 
+    end
+
+    if #pwd.text < 3 then
+        gui.set_text(error_node, "Password must be at least three characters.")
+        return false
+    end
+
+    return true
+end
+
 function on_input(self, action_id, action)
     -- KEYPRESSES
     if action.pressed and action_id == hash("esc") then
@@ -9,9 +32,20 @@ function on_input(self, action_id, action)
 
     -- GOOEY UI
     local group = gooey.group("new_game_menu_group", function()
-        gooey.input("password_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 })
+        pwd = gooey.input("password_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 })
 
-        gooey.input("repassword_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 })
+        rpwd = gooey.input("repassword_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 })
+
+        gooey.button("create_button", action_id, action, function()
+            gui.set_text(error_node, "")
+            local valid_password = validate_password()
+
+            if valid_password == true then
+                msg.post("controller:/controller#colyseus", "create_new_game", { password = pwd.text })
+                -- TODO start loading spinner
+            end
+            
+        end)
     end)
 
     return group.consumed
@@ -19,4 +53,6 @@ end
 
 function init(self)
     gooey.acquire_input()
+
+    error_node = gui.get_node("error_text")
 end
