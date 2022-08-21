@@ -1,4 +1,4 @@
-script: "/main/new_game_menu/new_game_menu.gui_script"
+script: "/controller/new_game_menu/new_game_menu.gui_script"
 fonts {
   name: "agave_200"
   font: "/assets/fonts/agave_200_b.font"

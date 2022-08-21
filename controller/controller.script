@@ -3,9 +3,9 @@ local Gamestate = require "game.gamestate.gamestate"
 local debug
 
 local function goto_game(self)
-	monarch.clear(hash("background"))
 	monarch.hide(hash("background"))
-	
+	monarch.clear()
+
 	msg.post("controller#game_proxy", "enable")
 end
 

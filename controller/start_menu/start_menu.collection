@@ -1,10 +1,10 @@
-name: "end_splash"
+name: "start_menu"
 scale_along_z: 0
 embedded_instances {
-  id: "screen"
+  id: "go"
   data: "components {\n"
-  "  id: \"screen\"\n"
-  "  component: \"/main/end_splash/gui/end_splash.gui\"\n"
+  "  id: \"monarch\"\n"
+  "  component: \"/controller/start_menu/start_menu.gui\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

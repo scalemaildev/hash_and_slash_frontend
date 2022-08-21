@@ -25,19 +25,61 @@ local function limit(self, pos)
 end
 
 function on_input(self, action_id, action)
-	if action.pressed and action_id == hash("right_click") then
-		self.drag = true
-		self.pressed_pos = vmath.vector3(action.x, action.y, 0)
-		self.pressed_time = socket.gettime()
-		self.camera_pos = go.get_position("/camera")
-	elseif action.released then
-		self.drag = false
-	end
+	-- MOUSE
+	if action_id == hash("right_click") then
+		if action.pressed then
+			self.drag = true
+			self.pressed_pos = vmath.vector3(action.x, action.y, 0)
+			self.pressed_time = socket.gettime()
+			self.camera_pos = go.get_position("/camera")
+		elseif action.released then
+			self.drag = false
+		end
 
-	if self.drag then
-		local mouse_pos = vmath.vector3(action.x, action.y, 0)
-		local pos = self.camera_pos + self.pressed_pos - vmath.vector3(action.x, action.y, 0)
-		go.set_position(limit(self, pos), "/camera")
+		if self.drag then
+			local mouse_pos = vmath.vector3(action.x, action.y, 0)
+			local pos = self.camera_pos + self.pressed_pos - vmath.vector3(action.x, action.y, 0)
+			go.set_position(limit(self, pos), "/camera")
+		end
+
+	-- KEYS
+	elseif action.pressed then
+		if action_id == hash("n") or action_id == hash("kp_1") then
+			msg.post("controller:/controller#colyseus", "player_action", {
+				act = 'MOVE',
+				data = { -1, -1 }
+			})
+		elseif action_id == hash("j") or action_id == hash("kp_4") then
+			msg.post("controller:/controller#colyseus", "player_action", {
+				act = 'MOVE',
+				data = { -2, 0 }
+			})
+		elseif action_id == hash("u") or action_id == hash("kp_7") then
+			msg.post("controller:/controller#colyseus", "player_action", {
+				act = 'MOVE',
+				data = { -1, 1 }
+			})
+		elseif action_id == hash("i") or action_id == hash("kp_9") then
+			msg.post("controller:/controller#colyseus", "player_action", {
+				act = 'MOVE',
+				data = { 1, 1 }
+			})
+		elseif action_id == hash("k") or action_id == hash("kp_6") then
+			msg.post("controller:/controller#colyseus", "player_action", {
+				act = 'MOVE',
+				data = { 2, 0 }
+			})
+		elseif action_id == hash("m") or action_id == hash("kp_3") then
+			msg.post("controller:/controller#colyseus", "player_action", {
+				act = 'MOVE',
+				data = { 1, -1 }
+			})
+		elseif action_id == hash("semicolon") or action_id == hash("kp_5") then
+			msg.post("controller:/controller#colyseus", "player_action", {
+				act = 'WAIT',
+				data = true
+			})
+		end
 	end
 end
 

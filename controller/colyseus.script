@@ -160,11 +160,19 @@ local function clear_game()
 	Gamestate.reset()
 end
 
+function resolve_player_action(action)
+	if room.state.gameStatus ~= "PLAYER_TURN" then return end
+	
+	room:send("playerAction", action)
+end
+
 function on_message(self, message_id, message, sender)
 	if message_id == hash("create_new_game") then
 		local room_id = create_new_game(message.password)
 	elseif message_id == hash("join_game") then
 		local room_id = join_room(message.room_id)
+	elseif message_id == hash("player_action") then
+		resolve_player_action(message)
 	end
 end
 
