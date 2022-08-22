@@ -3,8 +3,8 @@ main_collection = /controller/controller.collectionc
 render = /orthographic/render/orthographic.renderc
 
 [display]
-width = 800
-height = 540
+width = 1280
+height = 800
 
 [script]
 shared_state = 1

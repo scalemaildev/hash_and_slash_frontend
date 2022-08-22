@@ -3,7 +3,6 @@ local Gamestate = require "game.gamestate.gamestate"
 local debug
 
 local function goto_game(self)
-	monarch.hide(hash("background"))
 	monarch.clear()
 
 	msg.post("controller#game_proxy", "enable")
@@ -22,7 +21,7 @@ function on_message(self, message_id, message)
 	elseif message_id == hash("show_background") then
 		monarch.show(hash("background"), { no_stack = true })
 	elseif message_id == hash("show_menu") then
-		monarch.show(hash(message.menu))
+		monarch.replace(hash(message.menu))
 	elseif message_id == hash("goto_end_splash") then
 		goto_end_splash(self)
 	end

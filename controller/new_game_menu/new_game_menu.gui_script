@@ -27,7 +27,7 @@ end
 function on_input(self, action_id, action)
     -- KEYPRESSES
     if action.pressed and action_id == hash("esc") then
-        monarch.show("start_menu")
+        monarch.replace("start_menu")
     end
 
     -- GOOEY UI

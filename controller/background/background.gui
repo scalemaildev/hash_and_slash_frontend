@@ -15,8 +15,65 @@ background_color {
 }
 nodes {
   position {
-    x: 792.0
-    y: 12.0
+    x: 0.0
+    y: 0.0
+    z: -10.0
+    w: 1.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 1280.0
+    y: 800.0
+    z: 0.0
+    w: 1.0
+  }
+  color {
+    x: 0.07058824
+    y: 0.07058824
+    z: 0.07058824
+    w: 1.0
+  }
+  type: TYPE_BOX
+  blend_mode: BLEND_MODE_ALPHA
+  texture: ""
+  id: "bg"
+  xanchor: XANCHOR_NONE
+  yanchor: YANCHOR_NONE
+  pivot: PIVOT_SW
+  adjust_mode: ADJUST_MODE_FIT
+  layer: "bg"
+  inherit_alpha: true
+  slice9 {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 0.0
+  }
+  clipping_mode: CLIPPING_MODE_NONE
+  clipping_visible: true
+  clipping_inverted: false
+  alpha: 1.0
+  template_node_child: false
+  size_mode: SIZE_MODE_MANUAL
+  custom_type: 0
+  enabled: true
+  visible: true
+}
+nodes {
+  position {
+    x: 1277.0
+    y: 0.0
     z: 0.0
     w: 1.0
   }
@@ -39,9 +96,9 @@ nodes {
     w: 1.0
   }
   color {
-    x: 1.0
-    y: 1.0
-    z: 1.0
+    x: 0.8784314
+    y: 0.8784314
+    z: 0.8784314
     w: 1.0
   }
   type: TYPE_TEXT
@@ -51,7 +108,7 @@ nodes {
   id: "version"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE
-  pivot: PIVOT_E
+  pivot: PIVOT_SE
   outline {
     x: 1.0
     y: 1.0
@@ -66,7 +123,7 @@ nodes {
   }
   adjust_mode: ADJUST_MODE_FIT
   line_break: false
-  layer: ""
+  layer: "text"
   inherit_alpha: true
   alpha: 1.0
   outline_alpha: 1.0
@@ -80,8 +137,8 @@ nodes {
 }
 nodes {
   position {
-    x: 400.0
-    y: 377.0
+    x: 640.0
+    y: 600.0
     z: 0.0
     w: 1.0
   }
@@ -104,9 +161,9 @@ nodes {
     w: 1.0
   }
   color {
-    x: 1.0
-    y: 1.0
-    z: 1.0
+    x: 0.8784314
+    y: 0.8784314
+    z: 0.8784314
     w: 1.0
   }
   type: TYPE_TEXT
@@ -131,7 +188,7 @@ nodes {
   }
   adjust_mode: ADJUST_MODE_FIT
   line_break: false
-  layer: ""
+  layer: "text"
   inherit_alpha: true
   alpha: 1.0
   outline_alpha: 1.0
@@ -145,7 +202,7 @@ nodes {
 }
 nodes {
   position {
-    x: 5.0
+    x: 4.0
     y: 13.0
     z: 0.0
     w: 1.0
@@ -196,7 +253,7 @@ nodes {
   }
   adjust_mode: ADJUST_MODE_FIT
   line_break: false
-  layer: ""
+  layer: "text"
   inherit_alpha: true
   alpha: 1.0
   outline_alpha: 1.0
@@ -207,6 +264,12 @@ nodes {
   custom_type: 0
   enabled: true
   visible: true
+}
+layers {
+  name: "bg"
+}
+layers {
+  name: "text"
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT
