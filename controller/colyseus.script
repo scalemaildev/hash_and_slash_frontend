@@ -1,3 +1,4 @@
+local monarch = require "monarch.monarch"
 local ColyseusClient = require "colyseus.client"
 local Gamestate = require "game.gamestate.gamestate"
 local MessageReel = require "game.gamestate.message_reel"
@@ -106,6 +107,7 @@ local function handle_room_updates()
 
 	room:on_message("startNewGame", function(message)
 		if message.success == true then
+			Gamestate.set_game_id(message.topicId)
 			msg.post("/controller#controller", "goto_game")
 		else
 			-- TODO handle failure
@@ -124,7 +126,7 @@ end
 local function create_new_game(password)
 	client:create("gameRoom", { isObserver = false }, function(err, _room)
 		if (err ~= nil) then
-			-- TODO display error in GUI
+			monarch.post("new_game_menu", "connection_error")
 			print("join error: " .. err)
 			return
 		end
@@ -144,7 +146,7 @@ local function observe_game(room_id)
 
 	client:join_by_id(room_id, { isObserver = true }, function(err, _room)
 		if (err ~= nil) then
-			-- TODO display error in GUI
+			-- TODO display error
 			print("join error: " .. err)
 			return
 		end
@@ -173,6 +175,9 @@ function on_message(self, message_id, message, sender)
 		local room_id = join_room(message.room_id)
 	elseif message_id == hash("player_action") then
 		resolve_player_action(message)
+	elseif message_id == hash("quit_game") then
+		room:leave()
+		room = nil
 	end
 end
 
@@ -181,7 +186,7 @@ function init(self)
 		pprint('LOCAL SERVER')
 		client = ColyseusClient.new("ws://localhost:2567")
 	else
-		pprint('COLYSEUS ARENA SERVER')
-		client = ColyseusClient.new("wss://dpbtbu.us-east-vin.colyseus.net")
+		pprint('PRODUCTION SERVER')
+		client = ColyseusClient.new("wss://noqaut.colyseus.dev")
 	end
 end

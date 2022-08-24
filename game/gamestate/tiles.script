@@ -77,6 +77,12 @@ function get_bounds()
 	return bounds.x, bounds.y, bounds.w, bounds.h
 end
 
+function clear_tiles()
+	for pos, _ in pairs(tiles) do
+		remove_tile(pos)
+	end
+end
+
 function on_message(self, message_id, message)
 	if message_id == hash("create_tile") then
 		create_tile(message.pos, message.tile_type)
@@ -90,5 +96,7 @@ function on_message(self, message_id, message)
 		corpsify_tile(message.pos)
 	elseif message_id == hash("get_bounds") then
 		return get_bounds()
+	elseif message_id == hash("clear_tiles") then
+		clear_tiles()
 	end
 end

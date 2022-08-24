@@ -3,4 +3,6 @@ local monarch = require "monarch.monarch"
 function init(self)
     local v_node = gui.get_node("version")
     gui.set_text(v_node, sys.get_config("project.version"))
+
+    gui.set_render_order(0)
 end

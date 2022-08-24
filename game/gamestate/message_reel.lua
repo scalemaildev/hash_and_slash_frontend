@@ -57,4 +57,10 @@ function MessageReel.get()
 	return MessageReel.messages
 end
 
+function MessageReel.clear()
+	for key, _ in ipairs(MessageReel.messages) do
+		MessageReel.messages[key] = nil
+	end
+end
+
 return MessageReel

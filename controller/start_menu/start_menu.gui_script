@@ -1,21 +1,38 @@
 local gooey = require "gooey.gooey"
 local monarch = require "monarch.monarch"
 
+function update_button(button)
+    if button.over_now then
+        gui.play_flipbook(button.node, "mottle_button_hover")
+    elseif button.out_now then
+        gui.play_flipbook(button.node, "mottle_button")
+    end
+end
+
+function clear_ng_inputs()
+    monarch.post("new_game_menu", "clear_inputs")
+end
+
 function on_input(self, action_id, action)
     -- KEYPRESSES
     if action.pressed then
         if action_id == hash("n") then
-            monarch.replace("new_game_menu")
-        elseif action_id == hash("q") then
-            msg.post("@system:", "exit", {code = 0})
+            monarch.replace("new_game_menu", {}, {}, clear_ng_inputs)
+        elseif action_id == hash("q") or action_id == hash("esc") then
+            monarch.show("quit_modal", {}, { quit_program = true })
         end
     end
 
     -- GOOEY UI
-    local group = gooey.group("start_menu_group", function() 
-        gooey.button("new_game", action_id, action, function()
-            monarch.replace("new_game_menu")
-        end)
+    local group = gooey.group("start_menu_group", function()
+        
+        gooey.button("new_game_button", action_id, action, function(button)
+            monarch.replace("new_game_menu", {}, {}, clear_ng_inputs)
+        end, update_button)
+
+        gooey.button("quit_button", action_id, action, function(button)
+            monarch.show("quit_modal", {}, { quit_program = true })
+        end, update_button)
     end)
 
     return group.consumed
@@ -23,4 +40,6 @@ end
 
 function init(self)
     gooey.acquire_input()
+
+    gui.set_render_order(1)
 end

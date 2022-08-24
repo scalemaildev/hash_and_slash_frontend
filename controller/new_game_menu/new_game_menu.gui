@@ -1,11 +1,11 @@
 script: "/controller/new_game_menu/new_game_menu.gui_script"
 fonts {
-  name: "agave_200"
-  font: "/assets/fonts/agave_200_b.font"
-}
-fonts {
   name: "agave_16"
   font: "/assets/fonts/agave_16.font"
+}
+fonts {
+  name: "agave_12"
+  font: "/assets/fonts/agave_12.font"
 }
 textures {
   name: "gui"
@@ -19,8 +19,123 @@ background_color {
 }
 nodes {
   position {
-    x: 641.0
-    y: 301.0
+    x: 640.0
+    y: 250.0
+    z: 0.0
+    w: 1.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 504.0
+    y: 254.0
+    z: 0.0
+    w: 1.0
+  }
+  color {
+    x: 0.047058824
+    y: 0.14509805
+    z: 0.2784314
+    w: 1.0
+  }
+  type: TYPE_BOX
+  blend_mode: BLEND_MODE_ALPHA
+  texture: ""
+  id: "panel_outline"
+  xanchor: XANCHOR_NONE
+  yanchor: YANCHOR_NONE
+  pivot: PIVOT_CENTER
+  adjust_mode: ADJUST_MODE_FIT
+  layer: "panel"
+  inherit_alpha: true
+  slice9 {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 0.0
+  }
+  clipping_mode: CLIPPING_MODE_NONE
+  clipping_visible: true
+  clipping_inverted: false
+  alpha: 1.0
+  template_node_child: false
+  size_mode: SIZE_MODE_MANUAL
+  custom_type: 0
+  enabled: true
+  visible: true
+}
+nodes {
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 500.0
+    y: 250.0
+    z: 0.0
+    w: 1.0
+  }
+  color {
+    x: 0.05490196
+    y: 0.09803922
+    z: 0.18431373
+    w: 1.0
+  }
+  type: TYPE_BOX
+  blend_mode: BLEND_MODE_ALPHA
+  texture: ""
+  id: "panel"
+  xanchor: XANCHOR_NONE
+  yanchor: YANCHOR_NONE
+  pivot: PIVOT_CENTER
+  adjust_mode: ADJUST_MODE_FIT
+  parent: "panel_outline"
+  layer: "panel"
+  inherit_alpha: true
+  slice9 {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 0.0
+  }
+  clipping_mode: CLIPPING_MODE_NONE
+  clipping_visible: true
+  clipping_inverted: false
+  alpha: 1.0
+  template_node_child: false
+  size_mode: SIZE_MODE_MANUAL
+  custom_type: 0
+  enabled: true
+  visible: true
+}
+nodes {
+  position {
+    x: 0.0
+    y: 83.0
     z: 0.0
     w: 1.0
   }
@@ -43,9 +158,9 @@ nodes {
     w: 1.0
   }
   color {
-    x: 1.0
-    y: 1.0
-    z: 1.0
+    x: 0.8784314
+    y: 0.8784314
+    z: 0.8784314
     w: 1.0
   }
   type: TYPE_TEXT
@@ -70,7 +185,8 @@ nodes {
   }
   adjust_mode: ADJUST_MODE_FIT
   line_break: false
-  layer: ""
+  parent: "panel"
+  layer: "menu"
   inherit_alpha: true
   alpha: 1.0
   outline_alpha: 1.0
@@ -84,8 +200,8 @@ nodes {
 }
 nodes {
   position {
-    x: 655.0
-    y: 258.0
+    x: 0.0
+    y: 38.0
     z: 0.0
     w: 1.0
   }
@@ -102,7 +218,7 @@ nodes {
     w: 1.0
   }
   size {
-    x: 250.0
+    x: 300.0
     y: 35.0
     z: 0.0
     w: 1.0
@@ -121,7 +237,8 @@ nodes {
   yanchor: YANCHOR_NONE
   pivot: PIVOT_CENTER
   adjust_mode: ADJUST_MODE_FIT
-  layer: ""
+  parent: "panel"
+  layer: "menu"
   inherit_alpha: true
   slice9 {
     x: 0.0
@@ -141,8 +258,8 @@ nodes {
 }
 nodes {
   position {
-    x: 530.0
-    y: 258.0
+    x: -145.0
+    y: 0.0
     z: 0.0
     w: 1.0
   }
@@ -159,15 +276,15 @@ nodes {
     w: 1.0
   }
   size {
-    x: 250.0
+    x: 295.0
     y: 35.0
     z: 0.0
     w: 1.0
   }
   color {
-    x: 1.0
-    y: 1.0
-    z: 1.0
+    x: 0.8784314
+    y: 0.8784314
+    z: 0.8784314
     w: 1.0
   }
   type: TYPE_TEXT
@@ -192,7 +309,8 @@ nodes {
   }
   adjust_mode: ADJUST_MODE_FIT
   line_break: false
-  layer: ""
+  parent: "password_button"
+  layer: "menu"
   inherit_alpha: true
   alpha: 1.0
   outline_alpha: 1.0
@@ -206,8 +324,8 @@ nodes {
 }
 nodes {
   position {
-    x: 480.0
-    y: 258.0
+    x: -145.0
+    y: 0.0
     z: 0.0
     w: 1.0
   }
@@ -224,25 +342,25 @@ nodes {
     w: 1.0
   }
   size {
-    x: 100.0
+    x: 295.0
     y: 35.0
     z: 0.0
     w: 1.0
   }
   color {
-    x: 1.0
-    y: 1.0
-    z: 1.0
+    x: 0.8784314
+    y: 0.8784314
+    z: 0.8784314
     w: 1.0
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: "password:"
+  text: "Password (max 12 characters)"
   font: "agave_16"
-  id: "password_title"
-  xanchor: XANCHOR_NONE
+  id: "password_placeholder"
+  xanchor: XANCHOR_LEFT
   yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
+  pivot: PIVOT_W
   outline {
     x: 1.0
     y: 1.0
@@ -257,9 +375,10 @@ nodes {
   }
   adjust_mode: ADJUST_MODE_FIT
   line_break: false
-  layer: ""
+  parent: "password_button"
+  layer: "menu"
   inherit_alpha: true
-  alpha: 1.0
+  alpha: 0.75
   outline_alpha: 1.0
   shadow_alpha: 1.0
   template_node_child: false
@@ -271,8 +390,8 @@ nodes {
 }
 nodes {
   position {
-    x: 655.0
-    y: 218.0
+    x: 0.0
+    y: -12.0
     z: 0.0
     w: 1.0
   }
@@ -289,7 +408,7 @@ nodes {
     w: 1.0
   }
   size {
-    x: 250.0
+    x: 300.0
     y: 35.0
     z: 0.0
     w: 1.0
@@ -308,7 +427,8 @@ nodes {
   yanchor: YANCHOR_NONE
   pivot: PIVOT_CENTER
   adjust_mode: ADJUST_MODE_FIT
-  layer: ""
+  parent: "panel"
+  layer: "menu"
   inherit_alpha: true
   slice9 {
     x: 0.0
@@ -328,8 +448,8 @@ nodes {
 }
 nodes {
   position {
-    x: 530.0
-    y: 218.0
+    x: -145.0
+    y: 0.0
     z: 0.0
     w: 1.0
   }
@@ -346,15 +466,15 @@ nodes {
     w: 1.0
   }
   size {
-    x: 250.0
+    x: 295.0
     y: 35.0
     z: 0.0
     w: 1.0
   }
   color {
-    x: 1.0
-    y: 1.0
-    z: 1.0
+    x: 0.8784314
+    y: 0.8784314
+    z: 0.8784314
     w: 1.0
   }
   type: TYPE_TEXT
@@ -379,7 +499,8 @@ nodes {
   }
   adjust_mode: ADJUST_MODE_FIT
   line_break: false
-  layer: ""
+  parent: "repassword_button"
+  layer: "menu"
   inherit_alpha: true
   alpha: 1.0
   outline_alpha: 1.0
@@ -393,8 +514,8 @@ nodes {
 }
 nodes {
   position {
-    x: 480.0
-    y: 218.0
+    x: -145.0
+    y: 0.0
     z: 0.0
     w: 1.0
   }
@@ -411,25 +532,25 @@ nodes {
     w: 1.0
   }
   size {
-    x: 100.0
+    x: 295.0
     y: 35.0
     z: 0.0
     w: 1.0
   }
   color {
-    x: 1.0
-    y: 1.0
-    z: 1.0
+    x: 0.8784314
+    y: 0.8784314
+    z: 0.8784314
     w: 1.0
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: "re-enter:"
+  text: "Re-Enter Password"
   font: "agave_16"
-  id: "repassword_title"
-  xanchor: XANCHOR_NONE
+  id: "repassword_placeholder"
+  xanchor: XANCHOR_LEFT
   yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
+  pivot: PIVOT_W
   outline {
     x: 1.0
     y: 1.0
@@ -444,9 +565,10 @@ nodes {
   }
   adjust_mode: ADJUST_MODE_FIT
   line_break: false
-  layer: ""
+  parent: "repassword_button"
+  layer: "menu"
   inherit_alpha: true
-  alpha: 1.0
+  alpha: 0.75
   outline_alpha: 1.0
   shadow_alpha: 1.0
   template_node_child: false
@@ -458,8 +580,8 @@ nodes {
 }
 nodes {
   position {
-    x: 839.0
-    y: 231.0
+    x: -120.0
+    y: -100.0
     z: 0.0
     w: 1.0
   }
@@ -476,8 +598,8 @@ nodes {
     w: 1.0
   }
   size {
-    x: 75.0
-    y: 50.0
+    x: 200.0
+    y: 45.0
     z: 0.0
     w: 1.0
   }
@@ -485,13 +607,71 @@ nodes {
     x: 1.0
     y: 1.0
     z: 1.0
+    w: 1.0
+  }
+  type: TYPE_BOX
+  blend_mode: BLEND_MODE_ALPHA
+  texture: "gui/mottle_button_short"
+  id: "create_button"
+  xanchor: XANCHOR_NONE
+  yanchor: YANCHOR_NONE
+  pivot: PIVOT_CENTER
+  adjust_mode: ADJUST_MODE_FIT
+  parent: "panel"
+  layer: "panel"
+  inherit_alpha: true
+  slice9 {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 0.0
+  }
+  clipping_mode: CLIPPING_MODE_NONE
+  clipping_visible: true
+  clipping_inverted: false
+  alpha: 1.0
+  template_node_child: false
+  size_mode: SIZE_MODE_MANUAL
+  custom_type: 0
+  enabled: true
+  visible: true
+}
+nodes {
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 150.0
+    y: 35.0
+    z: 0.0
+    w: 1.0
+  }
+  color {
+    x: 0.8784314
+    y: 0.8784314
+    z: 0.8784314
     w: 1.0
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
   text: "Create"
   font: "agave_16"
-  id: "create_button"
+  id: "create_button_text"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE
   pivot: PIVOT_CENTER
@@ -509,6 +689,7 @@ nodes {
   }
   adjust_mode: ADJUST_MODE_FIT
   line_break: false
+  parent: "create_button"
   layer: ""
   inherit_alpha: true
   alpha: 1.0
@@ -523,8 +704,264 @@ nodes {
 }
 nodes {
   position {
-    x: 641.0
-    y: 168.0
+    x: 92.0
+    y: 17.0
+    z: 0.0
+    w: 1.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 30.0
+    y: 15.0
+    z: 0.0
+    w: 1.0
+  }
+  color {
+    x: 0.8784314
+    y: 0.8784314
+    z: 0.8784314
+    w: 1.0
+  }
+  type: TYPE_TEXT
+  blend_mode: BLEND_MODE_ALPHA
+  text: "[ent]"
+  font: "agave_12"
+  id: "create_button_key"
+  xanchor: XANCHOR_NONE
+  yanchor: YANCHOR_NONE
+  pivot: PIVOT_NE
+  outline {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  shadow {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  adjust_mode: ADJUST_MODE_FIT
+  line_break: false
+  parent: "create_button"
+  layer: ""
+  inherit_alpha: true
+  alpha: 1.0
+  outline_alpha: 1.0
+  shadow_alpha: 1.0
+  template_node_child: false
+  text_leading: 1.0
+  text_tracking: 0.0
+  custom_type: 0
+  enabled: true
+  visible: true
+}
+nodes {
+  position {
+    x: 120.0
+    y: -100.0
+    z: 0.0
+    w: 1.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 200.0
+    y: 45.0
+    z: 0.0
+    w: 1.0
+  }
+  color {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  type: TYPE_BOX
+  blend_mode: BLEND_MODE_ALPHA
+  texture: "gui/mottle_button_short"
+  id: "back_button"
+  xanchor: XANCHOR_NONE
+  yanchor: YANCHOR_NONE
+  pivot: PIVOT_CENTER
+  adjust_mode: ADJUST_MODE_FIT
+  parent: "panel"
+  layer: "panel"
+  inherit_alpha: true
+  slice9 {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 0.0
+  }
+  clipping_mode: CLIPPING_MODE_NONE
+  clipping_visible: true
+  clipping_inverted: false
+  alpha: 1.0
+  template_node_child: false
+  size_mode: SIZE_MODE_MANUAL
+  custom_type: 0
+  enabled: true
+  visible: true
+}
+nodes {
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 150.0
+    y: 35.0
+    z: 0.0
+    w: 1.0
+  }
+  color {
+    x: 0.8784314
+    y: 0.8784314
+    z: 0.8784314
+    w: 1.0
+  }
+  type: TYPE_TEXT
+  blend_mode: BLEND_MODE_ALPHA
+  text: "Back"
+  font: "agave_16"
+  id: "back_button_text"
+  xanchor: XANCHOR_NONE
+  yanchor: YANCHOR_NONE
+  pivot: PIVOT_CENTER
+  outline {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  shadow {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  adjust_mode: ADJUST_MODE_FIT
+  line_break: false
+  parent: "back_button"
+  layer: ""
+  inherit_alpha: true
+  alpha: 1.0
+  outline_alpha: 1.0
+  shadow_alpha: 1.0
+  template_node_child: false
+  text_leading: 1.0
+  text_tracking: 0.0
+  custom_type: 0
+  enabled: true
+  visible: true
+}
+nodes {
+  position {
+    x: 92.0
+    y: 17.0
+    z: 0.0
+    w: 1.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 30.0
+    y: 15.0
+    z: 0.0
+    w: 1.0
+  }
+  color {
+    x: 0.8784314
+    y: 0.8784314
+    z: 0.8784314
+    w: 1.0
+  }
+  type: TYPE_TEXT
+  blend_mode: BLEND_MODE_ALPHA
+  text: "[esc]"
+  font: "agave_12"
+  id: "back_button_key"
+  xanchor: XANCHOR_NONE
+  yanchor: YANCHOR_NONE
+  pivot: PIVOT_NE
+  outline {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  shadow {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  adjust_mode: ADJUST_MODE_FIT
+  line_break: false
+  parent: "back_button"
+  layer: ""
+  inherit_alpha: true
+  alpha: 1.0
+  outline_alpha: 1.0
+  shadow_alpha: 1.0
+  template_node_child: false
+  text_leading: 1.0
+  text_tracking: 0.0
+  custom_type: 0
+  enabled: true
+  visible: true
+}
+nodes {
+  position {
+    x: 0.0
+    y: -55.0
     z: 0.0
     w: 1.0
   }
@@ -542,21 +979,21 @@ nodes {
   }
   size {
     x: 400.0
-    y: 50.0
+    y: 35.0
     z: 0.0
     w: 1.0
   }
   color {
-    x: 1.0
-    y: 0.0
-    z: 0.0
+    x: 0.8784314
+    y: 0.8784314
+    z: 0.8784314
     w: 1.0
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: ""
+  text: "Fill out both fields."
   font: "agave_16"
-  id: "error_text"
+  id: "info_text"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE
   pivot: PIVOT_CENTER
@@ -574,7 +1011,8 @@ nodes {
   }
   adjust_mode: ADJUST_MODE_FIT
   line_break: false
-  layer: ""
+  parent: "panel"
+  layer: "menu"
   inherit_alpha: true
   alpha: 1.0
   outline_alpha: 1.0
@@ -585,6 +1023,12 @@ nodes {
   custom_type: 0
   enabled: true
   visible: true
+}
+layers {
+  name: "panel"
+}
+layers {
+  name: "menu"
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT

@@ -1,5 +1,6 @@
 Gamestate = {
 	room_id = "", -- colyseus room, not hcs topic
+	game_id = "",
 	round = 0,
 	game_result = "IN_PROGRESS",
 	player_stats = {
@@ -18,10 +19,11 @@ Gamestate = {
 -- General
 function Gamestate.reset()
 	Gamestate.room_id = ""
+	Gamestate.game_address = ""
 	Gamestate.round = 0
 	Gamestate.game_result = "IN_PROGRESS"
 	Gamestate.player_stats.hp = 0
-	Gamestate.play_stats.max_hp = 0
+	Gamestate.player_stats.max_hp = 0
 
 	for k,_ in pairs(Gamestate.vis) do
 		Gamestate.clear_vis_pos(k)
@@ -40,6 +42,15 @@ end
 
 function Gamestate.get_room_id()
 	return Gamestate.room_id
+end
+
+-- Game Address
+function Gamestate.set_game_id(id)
+	Gamestate.game_id = id
+end
+
+function Gamestate.get_game_id()
+	return Gamestate.game_id
 end
 
 -- Recalculate FoV

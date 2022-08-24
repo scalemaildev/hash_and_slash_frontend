@@ -45,20 +45,20 @@ local function remove_actor(id)
 	actors[id] = nil
 end
 
+local function clear_actors()
+	for id, _ in pairs(actors) do
+		remove_actor(id)
+	end
+end
+
 function on_message(self, message_id, message, sender)
 	if message_id == hash("create_actor") then
-		create_actor(
-		message.id, 
-		message.pos, 
-		message.actor_type
-	)
+		create_actor(message.id, message.pos, message.actor_type)
 	elseif message_id == hash("update_actor") then
-		update_actor(
-		message.id, 
-		message.pos, 
-		message.actor_type
-	)
+		update_actor(message.id, message.pos, message.actor_type)
 	elseif message_id == hash("remove_actor") then
 		remove_actor(message.id)
+	elseif message_id == hash("clear_actors") then
+		clear_actors()
 	end
 end

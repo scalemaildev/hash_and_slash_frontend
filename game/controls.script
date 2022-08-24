@@ -1,3 +1,5 @@
+local gooey = require "gooey.gooey"
+local monarch = require "monarch.monarch"
 local Gamestate = require "game.gamestate.gamestate"
 local Geo = require "game.helpers.geo"
 
@@ -44,7 +46,11 @@ function on_input(self, action_id, action)
 
 	-- KEYS
 	elseif action.pressed then
-		if action_id == hash("n") or action_id == hash("kp_1") then
+		-- MENU CONTROLS
+		if action_id == hash("esc") then
+			monarch.show("quit_modal", {}, { quit_program = false })
+		-- PLAYER ACTIONS
+		elseif action_id == hash("n") or action_id == hash("kp_1") then
 			msg.post("controller:/controller#colyseus", "player_action", {
 				act = 'MOVE',
 				data = { -1, -1 }
@@ -81,6 +87,8 @@ function on_input(self, action_id, action)
 			})
 		end
 	end
+
+	-- GOOEY UI
 end
 
 function update(self)
@@ -93,6 +101,8 @@ function final(self)
 end
 
 function init(self)
+	gooey.acquire_input()
+	
 	msg.post("/camera", "acquire_camera_focus")
 	msg.post(".", "acquire_input_focus")
 

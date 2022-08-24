@@ -17,9 +17,9 @@ local function update_player_hp_text(hp, max_hp)
 end
 
 local function create_richtext_message(key, message)
-	local _y = 130 + (key * 20)
+	local _y = 45 + (key * 20)
 	local settings = {
-		position = vmath.vector3(695, _y, 0),
+		position = vmath.vector3(1175, _y, 0),
 		outline = vmath.vector4(0, 0, 0, 1),
 		align = richtext.ALIGN_CENTER,
 		valign = richtext.VALIGN_BOTTOM,
@@ -55,6 +55,11 @@ local function update_message_reel()
 		
 		local message_nodes = create_richtext_message(i, text)
 	end
+end
+
+function init(self)
+	local game_id_node = gui.get_node("game_id")
+	gui.set_text(game_id_node, "Game ID: " .. Gamestate.get_game_id())
 end
 
 function on_message(self, message_id, message, sender)
