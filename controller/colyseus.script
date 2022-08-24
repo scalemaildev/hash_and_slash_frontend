@@ -12,8 +12,8 @@ local function handle_room_updates()
 		for _, change in pairs(changes) do
 			if change.field == "round" then
 				Gamestate.set_round(change.value)
-				msg.post("game:/controller#gui", "update_round_text", { new_round = change.value })
-				msg.post("game:/controller#gui", "update_message_reel")
+				msg.post("game:/gui#gui", "update_round_text", { new_round = change.value })
+				msg.post("game:/gui#gui", "update_message_reel")
 			elseif change.field == "gameResult" then
 				if change.value == "VICTORY" or change.value == "DEFEAT" then
 					Gamestate.set_game_result(change.value)
@@ -79,7 +79,7 @@ local function handle_room_updates()
 
 		if actor.id == 0 then
 			Gamestate.update_player_stats(actor.hp, actor.maxHp)
-			msg.post("game:/controller#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
+			msg.post("game:/gui#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
 		end
 	end
 
@@ -92,7 +92,7 @@ local function handle_room_updates()
 
 		if actor.id == 0 then
 			Gamestate.update_player_stats(actor.hp, actor.maxHp)
-			msg.post("game:/controller#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
+			msg.post("game:/gui#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
 		end
 	end
 

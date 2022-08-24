@@ -1,4 +1,4 @@
-script: "/game/gui/game.gui_script"
+script: "/game/gui/gui.gui_script"
 fonts {
   name: "agave_24_ol"
   font: "/assets/fonts/agave_24_ol.font"

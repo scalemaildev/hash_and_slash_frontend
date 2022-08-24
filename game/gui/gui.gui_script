@@ -1,3 +1,4 @@
+local monarch = require "monarch.monarch"
 local richtext = require "richtext.richtext"
 local color = require "richtext.color"
 local tags = require "richtext.tags"
@@ -58,6 +59,8 @@ local function update_message_reel()
 end
 
 function init(self)
+	msg.post(".", "acquire_input_focus")
+	
 	local game_id_node = gui.get_node("game_id")
 	gui.set_text(game_id_node, "Game ID: " .. Gamestate.get_game_id())
 end
