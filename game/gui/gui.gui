@@ -842,7 +842,7 @@ nodes {
 }
 nodes {
   position {
-    x: 1054.0
+    x: 1253.0
     y: 557.0
     z: 0.0
     w: 1.0
@@ -899,7 +899,7 @@ nodes {
 }
 nodes {
   position {
-    x: 1079.0
+    x: 1225.0
     y: 555.0
     z: 0.0
     w: 1.0
@@ -917,7 +917,7 @@ nodes {
     w: 1.0
   }
   size {
-    x: 75.0
+    x: 60.0
     y: 25.0
     z: 0.0
     w: 1.0
@@ -930,12 +930,12 @@ nodes {
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: ": 0"
+  text: "0 :"
   font: "agave_24_ol"
   id: "obs_count"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE
-  pivot: PIVOT_W
+  pivot: PIVOT_E
   outline {
     x: 0.101960786
     y: 0.101960786
