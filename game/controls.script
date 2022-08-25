@@ -26,7 +26,7 @@ local function limit(self, pos)
 end
 
 function on_input(self, action_id, action)
-	if monarch.is_visible("quit_modal") or monarch.is_visible("controls_modal") then return end
+	if monarch.is_visible("quit_modal") or monarch.is_visible("controls_modal") or monarch.is_visible("end_splash") then return end
 	
 	-- MOUSE
 	if action_id == hash("right_click") then

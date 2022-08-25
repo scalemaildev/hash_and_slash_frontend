@@ -14,7 +14,6 @@ function update_button(button)
 end
 
 function to_start_menu()
-    monarch.clear()
     msg.post("/controller#colyseus", "quit_game")
     msg.post("/controller#game_proxy", "disable")
     msg.post("/controller#controller", "goto_start_menu")
