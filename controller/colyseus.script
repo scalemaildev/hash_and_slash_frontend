@@ -121,7 +121,7 @@ local function handle_room_updates()
 	end)
 
 	room:on_message("updateObsCount", function(message)
-		-- TODO
+		msg.post("game:/gui#gui", "update_obs_count", { new_count = message })
 	end)
 end
 

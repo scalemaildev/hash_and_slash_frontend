@@ -19,6 +19,11 @@ local function update_player_hp_text(hp, max_hp)
 	gui.set_text(hp_text, 'HP: ' .. hp .. '/' .. max_hp)
 end
 
+local function update_obs_count(new_count)
+	local obs_count_text = gui.get_node("obs_count")
+	gui.set_text(obs_count_text, new_count .. " :")
+end
+
 local function create_richtext_message(key, message)
 	local _y = 45 + (key * 20)
 	local settings = {
@@ -102,6 +107,8 @@ function on_message(self, message_id, message, sender)
 		update_player_hp_text(message.hp, message.max_hp)
 	elseif message_id == hash("update_message_reel") then
 		update_message_reel()
+	elseif message_id == hash("update_obs_count") then
+		update_obs_count(message.new_count)
 	end
 end
 
