@@ -1,4 +1,5 @@
 Gamestate = {
+	creating = false,
 	room_id = "", -- colyseus room, not hcs topic
 	game_id = "",
 	round = 0,
@@ -18,6 +19,7 @@ Gamestate = {
 
 -- General
 function Gamestate.reset()
+	Gamestate.creating = false
 	Gamestate.room_id = ""
 	Gamestate.game_address = ""
 	Gamestate.round = 0
@@ -33,6 +35,14 @@ function Gamestate.reset()
 	Gamestate.bounds.y = 0
 	Gamestate.bounds.w = 0
 	Gamestate.bounds.h = 0
+end
+
+function Gamestate.set_creating(bool)
+	Gamestate.creating = bool
+end
+
+function Gamestate.is_creating()
+	return Gamestate.creating
 end
 
 -- Room ID
@@ -51,15 +61,6 @@ end
 
 function Gamestate.get_game_id()
 	return Gamestate.game_id
-end
-
--- Recalculate FoV
-function Gamestate.set_recalculate()
-	Gamestate.recalculate = true
-end
-
-function Gamestate.get_recalculate()
-	return Gamestate.recalculate
 end
 
 -- Round

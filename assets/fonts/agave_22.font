@@ -9,7 +9,7 @@ shadow_alpha: 0.0
 shadow_blur: 0
 shadow_x: 0.0
 shadow_y: 0.0
-extra_characters: ""
+extra_characters: "\342\206\226\342\206\227\342\206\220\342\206\222\342\206\231\342\206\230:"
 output_format: TYPE_BITMAP
 all_chars: false
 cache_width: 0

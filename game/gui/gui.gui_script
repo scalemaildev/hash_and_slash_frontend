@@ -60,15 +60,39 @@ local function update_message_reel()
 	end
 end
 
+function update_button(button)
+	if button.over_now then
+		gui.play_flipbook(button.node, "mottle_button_hover")
+	elseif button.out_now then
+		gui.play_flipbook(button.node, "mottle_button")
+	end
+end
+
 function on_input(self, action_id, action)
-	if monarch.is_visible("quit_modal") then return end
+	if monarch.is_visible("quit_modal") or monarch.is_visible("controls_modal") then return end
 	
 	-- HOTKEYS
 	if action.pressed then 
 		if action_id == hash("esc") then
 			monarch.show("quit_modal", {}, { quit_program = false })
+		elseif action_id == hash("c") then
+			monarch.show("controls_modal")
 		end
 	end
+
+	-- GOOEY UI
+	local group = gooey.group("game_ui_group", function()
+
+		gooey.button("controls_button", action_id, action, function(button)
+			monarch.show("controls_modal")
+		end, update_button)
+
+		gooey.button("quit_button", action_id, action, function(button)
+			monarch.show("quit_modal", {}, { quit_program = false })
+		end, update_button)
+	end)
+
+	return group.consumed
 end
 
 function on_message(self, message_id, message, sender)
@@ -83,6 +107,8 @@ end
 
 function init(self)
 	gooey.acquire_input()
+
+	gui.set_render_order(1)
 
 	local game_id_node = gui.get_node("game_id")
 	gui.set_text(game_id_node, "Game ID: " .. Gamestate.get_game_id())

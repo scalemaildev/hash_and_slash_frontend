@@ -106,11 +106,13 @@ local function handle_room_updates()
 	end
 
 	room:on_message("startNewGame", function(message)
+		Gamestate.set_creating(false)
+		
 		if message.success == true then
 			Gamestate.set_game_id(message.topicId)
 			msg.post("/controller#controller", "goto_game")
 		else
-			-- TODO handle failure
+			monarch.post("new_game_menu", "creation_error")
 		end
 	end)
 
@@ -142,11 +144,9 @@ end
 -- TODO reload game from save
 
 local function observe_game(room_id)
-	local recalculate = Gamestate.get_recalculate()
-
 	client:join_by_id(room_id, { isObserver = true }, function(err, _room)
 		if (err ~= nil) then
-			-- TODO display error
+			-- TODO display error on observe panel
 			print("join error: " .. err)
 			return
 		end

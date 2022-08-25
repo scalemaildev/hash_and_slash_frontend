@@ -1,9 +1,10 @@
 local gooey = require "gooey.gooey"
 local monarch = require "monarch.monarch"
+local Gamestate = require "game.gamestate.gamestate"
 
 local info_node
 local pwd
-local rwpd
+local rpwd
 
 local red = vmath.vector4(1, 0, 0, 1)
 
@@ -63,13 +64,17 @@ function update_input(input)
 end
 
 function enter_password()
-    gui.set_text(info_node, "")
+    if Gamestate.is_creating() == true then return end
+    
+    gui.set_text(info_node, "... Creating Game ...")
+    Gamestate.set_creating(true)
     local valid_password = validate_password()
 
     if valid_password == true then
         msg.post("controller:/controller#colyseus", "create_new_game", { password = pwd.text })
         gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
-        gui.set_text(info_node, "... Creating Game ...")
+    else
+        Gamestate.set_creating(false)
     end
 end
 
@@ -112,11 +117,14 @@ end
 function on_message(self, message_id, message)
     if message_id == hash("connection_error") then
         gui.set_color(info_node, red)
-        gui.set_text(info_node, "Connection Error - server might be down.")
-    elseif message_id == hash("clear_inputs") then
+        gui.set_text(info_node, "Error: Could not connect to the server.")
+    elseif message_id == hash("creation_error") then
+        gui.set_color(info_node, red)
+        gui.set_text(info_node, "Error: Failed to create a new game.")
+    elseif message_id == hash("reset_text") then
         gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
         gui.set_text(info_node, "Fill out both fields.")
-        
+
         if pwd ~= nil then
             pwd.text = nil
             local pwd_node = gui.get_node("password_text")
