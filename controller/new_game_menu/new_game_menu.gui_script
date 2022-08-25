@@ -86,9 +86,12 @@ function on_input(self, action_id, action)
         elseif action_id == hash("enter") then
             enter_password()
         elseif action_id == hash("tab") then
-            if rpwd.selected == false then
-                rpwd.selected = true
+            if pwd.selected == true then
                 pwd.selected = false
+                rpwd.selected = true
+            elseif rpwd.selected == true then
+                pwd.selected = true
+                rpwd.selected = false
             else
                 pwd.selected = true
                 rpwd.selected = false
@@ -126,11 +129,13 @@ function on_message(self, message_id, message)
         gui.set_text(info_node, "Fill out both fields.")
 
         if pwd ~= nil then
+            pwd.selected = false
             pwd.text = nil
             local pwd_node = gui.get_node("password_text")
             gui.set_text(pwd_node, "")
         end
         if rpwd ~= nil then
+            rpwd.selected = false
             rpwd.text = nil
             local rpwd_node = gui.get_node("repassword_text")
             gui.set_text(rpwd_node, "")
