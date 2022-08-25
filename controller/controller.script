@@ -15,10 +15,9 @@ local function goto_game(self)
 end
 
 local function goto_end_splash(self)
-	msg.post("controller#game_proxy", "unload")
-	
-	msg.post("controller#end_splash_proxy", "load")
-	msg.post("controller#end_splash_proxy", "enable")
+	if monarch.is_visible("quit_modal") then monarch.hide("quit_modal") end
+
+	monarch.show("end_splash")
 end
 
 function on_message(self, message_id, message)

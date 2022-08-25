@@ -1,0 +1,62 @@
+local gooey = require "gooey.gooey"
+local monarch = require "monarch.monarch"
+local Gamestate = require "game.gamestate.gamestate"
+
+function update_button(button)
+    if button.over_now then
+        gui.play_flipbook(button.node, "mottle_button_hover")
+    elseif button.out_now then
+        gui.play_flipbook(button.node, "mottle_button")
+    end
+end
+
+function to_start_menu()
+    monarch.clear()
+    msg.post("/controller#colyseus", "quit_game")
+    msg.post("/controller#game_proxy", "disable")
+    msg.post("/controller#controller", "goto_start_menu")
+end
+
+function quit()
+    Gamestate.reset()
+    msg.post("game:/controller#tiles", "clear_tiles")
+    msg.post("game:/controller#actors", "clear_actors")
+    MessageReel.clear()
+    monarch.clear(to_start_menu)
+end
+
+function on_input(self, action_id, action)
+    -- KEYPRESSES
+    if action.pressed then
+        if action_id == hash("ent") then
+            quit()
+        end
+    end
+
+    -- GOOEY UI
+    local group = gooey.group("end_splash_group", function()
+
+        gooey.button("return_button", action_id, action, function(button)
+            quit()
+        end, update_button)
+    end)
+
+    return group.consumed
+end
+
+function init(self)
+    gooey.acquire_input()
+    gui.set_render_order(2)
+    
+    local result = Gamestate.get_game_result()
+    local result_text = gui.get_node("result")
+    local desc_text = gui.get_node("description")
+
+    if result == 'VICTORY' then
+        gui.set_text(result_text, "~!~ VICTORY ~!~")
+        gui.set_text(desc_text, "YOU HAVE RUINED THE GREENSKIN PARTY\nBY MURDERING THE BIRTHDAY GOBLIN\nCONGRATULATIONS!")
+    else
+        gui.set_text(result_text, "~X~ YOU DIED ~X~")
+        gui.set_text(desc_text, "R.I.P")
+    end
+end
