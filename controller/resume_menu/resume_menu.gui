@@ -1,4 +1,4 @@
-script: "/controller/resume_menu/resume.gui_script"
+script: "/controller/resume_menu/resume_menu.gui_script"
 fonts {
   name: "agave_16"
   font: "/assets/fonts/agave_16.font"

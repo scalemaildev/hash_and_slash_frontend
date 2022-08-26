@@ -116,6 +116,17 @@ local function handle_room_updates()
 		end
 	end)
 
+	room:on_message("rebuildGame", function(message)
+		Gamestate.set_creating(false)
+
+		if message.success == true then
+			Gamestate.set_game_id(message.topicId)
+			msg.post("/controller#controller", "goto_game")
+		else
+			monarch.post("resume_menu", "rebuild_error")
+		end
+	end)
+
 	room:on_message("setGameActive", function(message)
 		-- TODO
 	end)
@@ -141,7 +152,21 @@ local function create_new_game(password)
 	end)
 end
 
--- TODO reload game from save
+local function resume_game(game_id, password)
+	client:create("gameRoom", { isObserver = false }, function(err, _room)
+		if (err ~= nil) then
+			monarch.post("resume_menu", "connection_error")
+			print("join error: " .. err)
+			return
+		end
+
+		room = _room
+
+		room:send("rebuildGame", { gameAddress = game_id, password = password })
+
+		handle_room_updates()
+	end)
+end
 
 local function observe_game(room_id)
 	client:join_by_id(room_id, { isObserver = true }, function(err, _room)
@@ -171,8 +196,8 @@ end
 function on_message(self, message_id, message, sender)
 	if message_id == hash("create_new_game") then
 		local room_id = create_new_game(message.password)
-	elseif message_id == hash("join_game") then
-		local room_id = join_room(message.room_id)
+	elseif message_id == hash("resume_game") then
+		local room_id = resume_game(message.game_id, message.password)
 	elseif message_id == hash("player_action") then
 		resolve_player_action(message)
 	elseif message_id == hash("quit_game") then
