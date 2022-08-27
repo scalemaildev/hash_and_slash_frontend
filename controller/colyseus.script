@@ -148,7 +148,7 @@ end
 local function resume_game(game_id, password)
 	client:create("gameRoom", { isObserver = false }, function(err, _room)
 		if (err ~= nil) then
-			monarch.post("resume_menu", "connection_error")
+			monarch.post("resume_menu", "rebuild_error")
 			print("join error: " .. err)
 			return
 		end
@@ -165,7 +165,7 @@ local function resume_game(game_id, password)
 			if message.success == true then
 				handle_gamestate_updates()
 				Gamestate.set_game_id(message.topicId)
-				msg.post("/controller#controller", "goto_game")
+				--msg.post("/controller#controller", "goto_game")
 			else
 				monarch.post("resume_menu", "rebuild_error")
 			end
@@ -206,6 +206,7 @@ function on_message(self, message_id, message, sender)
 	elseif message_id == hash("player_action") then
 		resolve_player_action(message)
 	elseif message_id == hash("quit_game") then
+		room:send("playerQuitGame") -- TODO dependent on whether observing
 		room:leave()
 		room = nil
 	end
