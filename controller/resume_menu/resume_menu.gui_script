@@ -3,12 +3,10 @@ local monarch = require "monarch.monarch"
 local Gamestate = require "game.gamestate.gamestate"
 
 local info_node
-local game_id
-local pwd
 
 local red = vmath.vector4(1, 0, 0, 1)
 
-function update_button(button)
+local function update_button(button)
     if button.over_now then
         gui.play_flipbook(button.node, "mottle_button_short_hover")
     elseif button.out_now then
@@ -16,7 +14,7 @@ function update_button(button)
     end
 end
 
-function update_input(input)
+local function update_input(input)
     local placeholder_node
     local button_node
 
@@ -41,41 +39,21 @@ function update_input(input)
     end
 end
 
-function enter_id_and_password()
+local function enter_id_and_password()
     if Gamestate.is_creating() == true then return end
 
     gui.set_text(info_node, "... Accessing Game ...")
     Gamestate.set_creating(true)
 
-    msg.post("controller:/controller#colyseus", "resume_game", { game_id = game_id.text, password = pwd.text })
+    msg.post("controller:/controller#colyseus", "resume_game", { game_id = game_id_g.text, password = resume_password.text })
 end
 
 function on_input(self, action_id, action)
-    -- KEYPRESSES
-    if action.pressed then
-        if action_id == hash("esc") then
-            monarch.replace("start_menu")
-        elseif action_id == hash("enter") then
-            enter_id_and_password()
-        elseif action_id == hash("tab") then
-            if game_id.selected == true then
-                game_id.selected = false
-                pwd.selected = true
-            elseif pwd.selected == true then
-                game_id.selected = true
-                pwd.selected = false
-            else
-                game_id.selected = true
-                pwd.selected = false
-            end
-        end
-    end
-
     -- GOOEY UI
     local group = gooey.group("resume_menu_group", function()
-        game_id = gooey.input("game_id_text", gui.KEYBOARD_TYPE_DEFAULT, action_id, action, { max_length = 20, allowed_characters = "[%d%.]" }, update_input)
+        game_id_g = gooey.input("game_id_text", gui.KEYBOARD_TYPE_DEFAULT, action_id, action, { max_length = 20, allowed_characters = "[%d%.]" }, update_input)
 
-        pwd = gooey.input("password_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 }, update_input)
+        resume_password = gooey.input("password_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 }, update_input)
 
         gooey.button("resume_button", action_id, action, function()
             enter_id_and_password()
@@ -85,11 +63,33 @@ function on_input(self, action_id, action)
             monarch.replace("start_menu")
         end, update_button)
     end)
+    
+    -- KEYPRESSES
+    if action.pressed then
+        if action_id == hash("esc") then
+            monarch.replace("start_menu")
+        elseif action_id == hash("enter") then
+            enter_id_and_password()
+        elseif action_id == hash("tab") then
+            if game_id_g.selected == true then
+                game_id_g.selected = false
+                resume_password.selected = true
+            elseif resume_password.selected == true then
+                game_id_g.selected = true
+                resume_password.selected = false
+            else
+                game_id_g.selected = true
+                resume_password.selected = false
+            end
+        end
+    end
 
     return group.consumed
 end
 
 function on_message(self, message_id, message)
+    Gamestate.set_creating(false)
+    
     if message_id == hash("rebuild_error") then
         gui.set_color(info_node, red)
         gui.set_text(info_node, "Error: Could not rebuild game from topic.")
@@ -97,18 +97,11 @@ function on_message(self, message_id, message)
         gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
         gui.set_text(info_node, "Fill out both fields.")
 
-        if game_id ~= nil then
-            game_id.selected = false
-            game_id.text = nil
-            local game_id_node = gui.get_node("game_id_text")
-            gui.set_text(game_id_node, "")
-        end
-        if pwd ~= nil then
-            pwd.selected = false
-            pwd.text = nil
-            local rpwd_node = gui.get_node("password_text")
-            gui.set_text(pwd_node, "")
-        end
+        local game_id_node = gui.get_node("game_id_text")
+        gui.set_text(game_id_node, "")
+
+        local resume_password_node = gui.get_node("password_text")
+        gui.set_text(resume_password_node, "")
     end
 end
 

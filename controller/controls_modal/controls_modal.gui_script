@@ -1,7 +1,7 @@
 local gooey = require "gooey.gooey"
 local monarch = require "monarch.monarch"
 
-function update_button(button)
+local function update_button(button)
     if button.over_now then
         gui.play_flipbook(button.node, "mottle_button_hover")
     elseif button.out_now then

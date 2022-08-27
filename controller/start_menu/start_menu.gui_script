@@ -1,7 +1,7 @@
 local gooey = require "gooey.gooey"
 local monarch = require "monarch.monarch"
 
-function update_button(button)
+local function update_button(button)
     if button.over_now then
         gui.play_flipbook(button.node, "mottle_button_hover")
     elseif button.out_now then
@@ -9,11 +9,30 @@ function update_button(button)
     end
 end
 
-function reset_ng_text()
+local function reset_ng_text()
+    if password_g ~= nil then
+        password_g.selected = false
+        password_g.text = nil
+    end
+    
+    if repassword_g ~= nil then
+        repassword_g.selected = false
+        repassword_g.text = nil
+    end
+    
     monarch.post("new_game_menu", "reset_text")
 end
 
-function reset_resume_text()
+local function reset_resume_text()
+    if game_id_g ~= nil then
+        game_id_g.selected = false
+        game_id_g.text = nil
+    end
+    if resume_password ~= nil then
+        resume_password.selected = false
+        resume_password.text = nil
+    end
+    
     monarch.post("resume_menu", "reset_text")
 end
 

@@ -3,25 +3,23 @@ local monarch = require "monarch.monarch"
 local Gamestate = require "game.gamestate.gamestate"
 
 local info_node
-local pwd
-local rpwd
 
 local red = vmath.vector4(1, 0, 0, 1)
 
-function validate_password(password)
-    if pwd.text == "" or rpwd.text == "" then
+local function validate_password(password)
+    if password_g.text == "" or repassword_g.text == "" then
         gui.set_color(info_node, red)
         gui.set_text(info_node, "Fill out both password fields.")
         return false
     end
     
-    if pwd.text ~= rpwd.text then
+    if password_g.text ~= repassword_g.text then
         gui.set_color(info_node, red)
         gui.set_text(info_node, "Passwords do not match.")
         return false 
     end
 
-    if #pwd.text < 3 then
+    if #password_g.text < 3 then
         gui.set_color(info_node, red)
         gui.set_text(info_node, "Password must be at least three characters.")
         return false
@@ -30,7 +28,7 @@ function validate_password(password)
     return true
 end
 
-function update_button(button)
+local function update_button(button)
     if button.over_now then
         gui.play_flipbook(button.node, "mottle_button_short_hover")
     elseif button.out_now then
@@ -38,7 +36,7 @@ function update_button(button)
     end
 end
 
-function update_input(input)
+local function update_input(input)
     local placeholder_node
     local button_node
     
@@ -63,7 +61,7 @@ function update_input(input)
     end
 end
 
-function enter_password()
+local function enter_password()
     if Gamestate.is_creating() == true then return end
     
     gui.set_text(info_node, "... Creating Game ...")
@@ -71,7 +69,7 @@ function enter_password()
     local valid_password = validate_password()
 
     if valid_password == true then
-        msg.post("controller:/controller#colyseus", "create_new_game", { password = pwd.text })
+        msg.post("controller:/controller#colyseus", "create_new_game", { password = password_g.text })
         gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
     else
         Gamestate.set_creating(false)
@@ -79,31 +77,11 @@ function enter_password()
 end
 
 function on_input(self, action_id, action)
-    -- KEYPRESSES
-    if action.pressed then
-        if action_id == hash("esc") then
-            monarch.replace("start_menu")
-        elseif action_id == hash("enter") then
-            enter_password()
-        elseif action_id == hash("tab") then
-            if pwd.selected == true then
-                pwd.selected = false
-                rpwd.selected = true
-            elseif rpwd.selected == true then
-                pwd.selected = true
-                rpwd.selected = false
-            else
-                pwd.selected = true
-                rpwd.selected = false
-            end
-        end
-    end
-
     -- GOOEY UI
     local group = gooey.group("new_game_menu_group", function()
-        pwd = gooey.input("password_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 }, update_input)
-        
-        rpwd = gooey.input("repassword_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 }, update_input)
+        password_g = gooey.input("password_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 }, update_input)
+
+        repassword_g = gooey.input("repassword_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 }, update_input)
 
         gooey.button("create_button", action_id, action, function()
             enter_password()
@@ -113,11 +91,33 @@ function on_input(self, action_id, action)
             monarch.replace("start_menu")
         end, update_button)
     end)
+    
+    -- KEYPRESSES
+    if action.pressed then
+        if action_id == hash("esc") then
+            monarch.replace("start_menu")
+        elseif action_id == hash("enter") then
+            enter_password()
+        elseif action_id == hash("tab") then
+            if password_g.selected == true then
+                password_g.selected = false
+                repassword_g.selected = true
+            elseif repassword_g.selected == true then
+                password_g.selected = true
+                repassword_g.selected = false
+            else
+                password_g.selected = true
+                repassword_g.selected = false
+            end
+        end
+    end
 
     return group.consumed
 end
 
 function on_message(self, message_id, message)
+    Gamestate.set_creating(false)
+    
     if message_id == hash("connection_error") then
         gui.set_color(info_node, red)
         gui.set_text(info_node, "Error: Could not connect to the server.")
@@ -128,18 +128,11 @@ function on_message(self, message_id, message)
         gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
         gui.set_text(info_node, "Fill out both fields.")
 
-        if pwd ~= nil then
-            pwd.selected = false
-            pwd.text = nil
-            local pwd_node = gui.get_node("password_text")
-            gui.set_text(pwd_node, "")
-        end
-        if rpwd ~= nil then
-            rpwd.selected = false
-            rpwd.text = nil
-            local rpwd_node = gui.get_node("repassword_text")
-            gui.set_text(rpwd_node, "")
-        end
+        local password_node = gui.get_node("password_text")
+        gui.set_text(password_node, "")
+
+        local repassword_node = gui.get_node("repassword_text")
+        gui.set_text(repassword_node, "")
     end
 end
 
