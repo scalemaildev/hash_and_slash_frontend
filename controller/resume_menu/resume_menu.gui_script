@@ -85,7 +85,10 @@ function on_message(self, message_id, message)
     if message_id == hash("connection_error") then
         gui.set_color(info_node, red)
         gui.set_text(info_node, "Error: Could not connect to the server.")
-    elseif message_id == hash("rebuild_error") then        
+    elseif message_id == hash("rooms_error") then
+        gui.set_color(info_node, red)
+        gui.set_text(info_node, "Error: Could not retrieve rooms from server.")
+    elseif message_id == hash("rebuild_error") then
         gui.set_color(info_node, red)
         gui.set_text(info_node, message.error_message)
     elseif message_id == hash("reset_text") then
