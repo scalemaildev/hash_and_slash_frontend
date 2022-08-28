@@ -41,3 +41,6 @@ game_binding = /input/game.input_bindingc
 [physics]
 world_count = 10
 
+[collection_proxy]
+max_count = 12
+
