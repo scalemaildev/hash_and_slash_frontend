@@ -6,14 +6,6 @@ local info_node
 
 local red = vmath.vector4(1, 0, 0, 1)
 
-local function update_button(button)
-    if button.over_now then
-        gui.play_flipbook(button.node, "mottle_button_short_hover")
-    elseif button.out_now then
-        gui.play_flipbook(button.node, "mottle_button_short")
-    end
-end
-
 local function update_input(input)
     local placeholder_node
     local button_node
@@ -89,10 +81,13 @@ end
 
 function on_message(self, message_id, message)
     Gamestate.set_creating(false)
-    
-    if message_id == hash("rebuild_error") then
+
+    if message_id == hash("connection_error") then
         gui.set_color(info_node, red)
-        gui.set_text(info_node, "Error: Could not rebuild game from topic.")
+        gui.set_text(info_node, "Error: Could not connect to the server.")
+    elseif message_id == hash("rebuild_error") then        
+        gui.set_color(info_node, red)
+        gui.set_text(info_node, message.error_message)
     elseif message_id == hash("reset_text") then
         gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
         gui.set_text(info_node, "Fill out both fields.")

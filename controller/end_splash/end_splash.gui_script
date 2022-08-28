@@ -2,14 +2,6 @@ local gooey = require "gooey.gooey"
 local monarch = require "monarch.monarch"
 local Gamestate = require "game.gamestate.gamestate"
 
-local function update_button(button)
-    if button.over_now then
-        gui.play_flipbook(button.node, "mottle_button_hover")
-    elseif button.out_now then
-        gui.play_flipbook(button.node, "mottle_button")
-    end
-end
-
 local function to_start_menu()
     msg.post("/controller#colyseus", "quit_game")
     msg.post("/controller#game_proxy", "disable")
@@ -25,13 +17,6 @@ local function quit()
 end
 
 function on_input(self, action_id, action)
-    -- KEYPRESSES
-    if action.pressed then
-        if action_id == hash("enter") then
-            quit()
-        end
-    end
-
     -- GOOEY UI
     local group = gooey.group("end_splash_group", function()
 
@@ -39,6 +24,13 @@ function on_input(self, action_id, action)
             quit()
         end, update_button)
     end)
+    
+    -- KEYPRESSES
+    if action.pressed then
+        if action_id == hash("enter") then
+            quit()
+        end
+    end
 
     return group.consumed
 end

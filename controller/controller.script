@@ -2,6 +2,14 @@ local monarch = require "monarch.monarch"
 local Gamestate = require "game.gamestate.gamestate"
 local debug
 
+local function update_button(button)
+	if button.over_now then
+		gui.play_flipbook(button.node, "mottle_button_hover")
+	elseif button.out_now then
+		gui.play_flipbook(button.node, "mottle_button")
+	end
+end
+
 local function goto_start_menu(self)
 	msg.post("#", "show_background")
 	msg.post("#", "show_menu", { menu = "start_menu" })

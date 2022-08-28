@@ -5,14 +5,6 @@ local MessageReel = require "game.gamestate.message_reel"
 
 local quit_program
 
-local function update_button(button)
-    if button.over_now then
-        gui.play_flipbook(button.node, "mottle_button_hover")
-    elseif button.out_now then
-        gui.play_flipbook(button.node, "mottle_button")
-    end
-end
-
 local function to_start_menu()
     msg.post("/controller#colyseus", "quit_game")
     msg.post("/controller#game_proxy", "disable")

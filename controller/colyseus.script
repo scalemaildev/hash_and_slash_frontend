@@ -156,7 +156,7 @@ local function create_new_game(password)
 				msg.post("game:/gui#gui", "update_game_id")
 				msg.post("/controller#controller", "goto_game")
 			else
-				monarch.post("new_game_menu", "creation_error")
+				monarch.post("new_game_menu", "creation_error", { error_message = message.message })
 			end
 		end)
 		
@@ -166,7 +166,7 @@ end
 local function resume_game(game_id, password)
 	client:create("gameRoom", { isObserver = false }, function(err, _room)
 		if (err ~= nil) then
-			monarch.post("resume_menu", "rebuild_error")
+			monarch.post("resume_menu", "connection_error")
 			print("join error: " .. err)
 			return
 		end
@@ -185,7 +185,7 @@ local function resume_game(game_id, password)
 				msg.post("game:/gui#gui", "update_game_id")
 				msg.post("/controller#controller", "goto_game")
 			else
-				monarch.post("resume_menu", "rebuild_error")
+				monarch.post("resume_menu", "rebuild_error", { error_message = message.message })
 			end
 		end)
 	end)
