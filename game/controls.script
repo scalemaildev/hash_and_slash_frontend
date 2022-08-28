@@ -5,6 +5,10 @@ local Geo = require "game.helpers.geo"
 local WIDTH = sys.get_config("display.width")
 local HEIGHT = sys.get_config("display.height")
 
+local function reset_bounds(self)
+	self.bounds = vmath.vector4(0, 0, 0, 0)
+end
+
 function set_bounds(self)
 	local x, y, w, h = Gamestate.get_bounds()
 	
@@ -100,5 +104,6 @@ function init(self)
 	msg.post("/camera", "acquire_camera_focus")
 	msg.post(".", "acquire_input_focus")
 
+	reset_bounds(self)
 	set_bounds(self)
 end

@@ -72,7 +72,7 @@ local function handle_gamestate_updates()
 		for _, change in pairs(changes) do
 			if change.field == "round" then
 				update_round(change.value)
-			elseif change.field == "gameResult" then
+			elseif change.field == "gameResult" and not Gamestate.is_creating() then
 				update_game_result(change.value)
 			end
 		end
@@ -137,6 +137,7 @@ end
 local function create_new_game(password)
 	client:create("gameRoom", { isObserver = false }, function(err, _room)
 		if (err ~= nil) then
+			Gamestate.set_creating(false)
 			monarch.post("new_game_menu", "connection_error")
 			print("join error: " .. err)
 			return
@@ -157,6 +158,7 @@ local function create_new_game(password)
 				msg.post("/controller#controller", "goto_game")
 			else
 				monarch.post("new_game_menu", "creation_error", { error_message = message.message })
+				room = nil
 			end
 		end)
 		
@@ -164,10 +166,9 @@ local function create_new_game(password)
 end
 
 local function resume_game(game_id, password)
-	local valid_game = true
-	
 	client:get_available_rooms("gameRoom", function(err, rooms)
 		if (err) then
+			Gamestate.set_creating(false)
 			monarch.post("resume_menu", "rooms_error")
 			print("rooms error: " .. err)
 			return
@@ -175,50 +176,49 @@ local function resume_game(game_id, password)
 
 		for _, game in pairs(rooms) do
 			if game.metadata.gameAddress == game_id then
-				valid_game = false
-				Gamestate.set_creating(false)
-				
 				if game.metadata.gameActive == true then
 					monarch.post("resume_menu", "rebuild_error", { error_message = "Error: This game is currently live." })
 				elseif game.metadata.letterBoxLength > 0 then
-					monarch.post("resume_menu", "rebuild_error", { error_message = "Error: Letterbox is still processing (" .. game.metadata.letterBoxLength .. " messages remain)" })
+					monarch.post("resume_menu", "rebuild_error", { error_message = "Error: This game's letterbox is still processing (" .. game.metadata.letterBoxLength .. " messages remain)" })
 				else
-					monarch.post("resume_menu", "rebuild_error", { error_message = "Error: Game is in post-processing and should be ready soon." })
+					monarch.post("resume_menu", "rebuild_error", { error_message = "Error: This game is in post-processing, and should be ready soon." })
 				end
 
+				Gamestate.set_creating(false)
 				return
 			end
 		end
-	end)
 
-	if valid_game == false then 
-		pprint("cancel game loading")
-		return 
-	end
-	
-	client:create("gameRoom", { isObserver = false }, function(err, _room)
-		if (err ~= nil) then
-			monarch.post("resume_menu", "connection_error")
-			print("join error: " .. err)
-			return
-		end
-
-		room = _room
-		handle_gamestate_updates()
-		handle_room_updates()
-
-		room:send("rebuildGame", { gameAddress = game_id, password = password })
-
-		room:on_message("rebuildGame", function(message)
-			Gamestate.set_creating(false)
-			
-			if message.success == true then
-				Gamestate.set_game_id(message.topicId)
-				msg.post("game:/gui#gui", "update_game_id")
-				msg.post("/controller#controller", "goto_game")
-			else
-				monarch.post("resume_menu", "rebuild_error", { error_message = message.message })
+		client:create("gameRoom", { isObserver = false }, function(err, _room)
+			if (err ~= nil) then
+				Gamestate.set_creating(false)
+				monarch.post("resume_menu", "connection_error")
+				print("join error: " .. err)
+				return
 			end
+
+			room = _room
+			handle_gamestate_updates()
+			handle_room_updates()
+
+			room:send("rebuildGame", { gameAddress = game_id, password = password })
+
+			room:on_message("rebuildGame", function(message)
+				Gamestate.set_creating(false)
+
+				if message.success == true then
+					Gamestate.set_game_id(message.topicId)
+					msg.post("game:/gui#gui", "update_game_id")
+					msg.post("/controller#controller", "goto_game")
+				else
+					Gamestate.reset()
+					msg.post("game:/controller#tiles", "clear_tiles")
+					msg.post("game:/controller#actors", "clear_actors")
+					MessageReel.clear()
+					monarch.post("resume_menu", "rebuild_error", { error_message = message.message })
+					room = nil
+				end
+			end)
 		end)
 	end)
 end
@@ -236,11 +236,6 @@ local function observe_game(room_id)
 
 		-- TODO connect and setup updates
 	end)
-end
-
-local function clear_game()
-	room = nil
-	Gamestate.reset()
 end
 
 function resolve_player_action(action)

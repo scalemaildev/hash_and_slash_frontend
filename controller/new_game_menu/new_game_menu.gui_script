@@ -55,9 +55,12 @@ end
 
 local function enter_password()
     if Gamestate.is_creating() == true then return end
-    
-    gui.set_text(info_node, "... Creating Game ...")
+
     Gamestate.set_creating(true)
+    
+    gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
+    gui.set_text(info_node, "... Creating Game ...")
+    
     local valid_password = validate_password()
 
     if valid_password == true then

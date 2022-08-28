@@ -61,7 +61,7 @@ local function update_message_reel()
 			text = "<color=grey>" .. text .. "</color>"
 		end
 		
-		local message_nodes = create_richtext_message(i, text)
+		create_richtext_message(i, text)
 	end
 end
 
