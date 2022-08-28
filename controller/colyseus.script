@@ -70,7 +70,7 @@ local function handle_gamestate_updates()
 	-- General State Updates
 	room.state['on_change'] = function (changes)
 		for _, change in pairs(changes) do
-			if change.field == "round" then
+			if change.field == "round" and not Gamestate.is_creating() then
 				update_round(change.value)
 			elseif change.field == "gameResult" and not Gamestate.is_creating() then
 				update_game_result(change.value)
@@ -208,6 +208,7 @@ local function resume_game(game_id, password)
 
 				if message.success == true then
 					Gamestate.set_game_id(message.topicId)
+					msg.post("game:/gui#gui", "update_message_reel")
 					msg.post("game:/gui#gui", "update_game_id")
 					msg.post("/controller#controller", "goto_game")
 				else

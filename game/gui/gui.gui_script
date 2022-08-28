@@ -7,7 +7,7 @@ local tags = require "richtext.tags"
 local Gamestate = require "game.gamestate.gamestate"
 local MessageReel = require "game.gamestate.message_reel"
 
-local message_nodes = {}
+local rich_messages = {}
 
 local function update_round_text(new_round)
 	local round_text = gui.get_node("round")
@@ -36,19 +36,16 @@ local function create_richtext_message(key, message)
 	}
 
 	local rich_message = richtext.create(message, "agave_16_ol", settings)
-
-	for _, message in ipairs(rich_message) do
-		table.insert(message_nodes, message.node)
-	end
+	table.insert(rich_messages, rich_message)
 end
 
 local function update_message_reel()
 	local messages = MessageReel.get()
 
 	-- remove pre-existing message nodes
-	for key, node in ipairs(message_nodes) do
-		gui.delete_node(node)
-		message_nodes[key] = nil
+	for key, rich_message in ipairs(rich_messages) do
+		richtext.remove(rich_message)
+		rich_messages[key] = nil
 	end
 
 	-- insert the new ones
