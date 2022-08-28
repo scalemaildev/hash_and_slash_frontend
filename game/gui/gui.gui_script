@@ -109,6 +109,9 @@ function on_message(self, message_id, message, sender)
 		update_message_reel()
 	elseif message_id == hash("update_obs_count") then
 		update_obs_count(message.new_count)
+	elseif message_id == hash("update_game_id") then
+		local game_id_node = gui.get_node("game_id")
+		gui.set_text(game_id_node, "Game ID: " .. Gamestate.get_game_id())
 	end
 end
 
@@ -116,7 +119,4 @@ function init(self)
 	gooey.acquire_input()
 
 	gui.set_render_order(1)
-
-	local game_id_node = gui.get_node("game_id")
-	gui.set_text(game_id_node, "Game ID: " .. Gamestate.get_game_id())
 end

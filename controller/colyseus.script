@@ -6,42 +6,85 @@ local MessageReel = require "game.gamestate.message_reel"
 local client
 local room
 
+local function update_round(round)
+	Gamestate.set_round(round)
+	msg.post("game:/gui#gui", "update_round_text", { new_round = round })
+	msg.post("game:/gui#gui", "update_message_reel")
+end
+
+local function update_game_result(result)
+	if result == "VICTORY" or result == "DEFEAT" then
+		Gamestate.set_game_result(result)
+		msg.post("controller:/controller#controller", "goto_end_splash")
+	end
+end
+
+local function update_vis_pos(bool, pos)
+	if bool == true then
+		Gamestate.see_vis_pos(pos)
+		msg.post("game:/controller#tiles", "untint_tile", { pos = pos })
+	else
+		Gamestate.unsee_vis_pos(pos)
+		msg.post("game:/controller#tiles", "tint_tile", { pos = pos })
+	end
+end
+
+local function add_tile(tile)
+	msg.post("game:/controller#tiles", "create_tile", { pos = tile.pos, tile_type = tile.symbol })
+
+	-- force recalc on reloading/observing
+	local _pos = tostring(tile.pos)
+	local vis = Gamestate.get_vis_pos(_pos)
+	if vis ~= true then
+		msg.post("game:/controller#tiles", "tint_tile", { pos = tile.pos })
+	end
+end
+
+local function add_actor(actor)
+	msg.post("game:/controller#actors", "create_actor", { 
+		id = actor.id,
+		pos = actor.pos,
+		actor_type = actor.symbol
+	})
+
+	if actor.id == 0 then
+		Gamestate.update_player_stats(actor.hp, actor.maxHp)
+		msg.post("game:/gui#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
+	end
+end
+
+local function update_actor(actor)
+	msg.post("game:/controller#actors", "update_actor", { 
+		id = actor.id,
+		pos = actor.pos,
+		actor_type = actor.symbol 
+	})
+
+	if actor.id == 0 then
+		Gamestate.update_player_stats(actor.hp, actor.maxHp)
+		msg.post("game:/gui#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
+	end
+end
+
 local function handle_gamestate_updates()
 	-- General State Updates
 	room.state['on_change'] = function (changes)
 		for _, change in pairs(changes) do
 			if change.field == "round" then
-				Gamestate.set_round(change.value)
-				msg.post("game:/gui#gui", "update_round_text", { new_round = change.value })
-				msg.post("game:/gui#gui", "update_message_reel")
+				update_round(change.value)
 			elseif change.field == "gameResult" then
-				if change.value == "VICTORY" or change.value == "DEFEAT" then
-					Gamestate.set_game_result(change.value)
-					msg.post("controller:/controller#controller", "goto_end_splash")
-				end
+				update_game_result(change.value)
 			end
 		end
 	end
 
 	-- Visible Positions
 	room.state.vis['on_add'] = function (val, key)
-		if val == true then
-			Gamestate.see_vis_pos(key)
-			msg.post("game:/controller#tiles", "untint_tile", { pos = key })
-		else
-			Gamestate.unsee_vis_pos(key)
-			msg.post("game:/controller#tiles", "tint_tile", { pos = key })
-		end
+		update_vis_pos(val, key)
 	end
 
 	room.state.vis['on_change'] = function (val, key)
-		if val == true then
-			Gamestate.see_vis_pos(key)
-			msg.post("game:/controller#tiles", "untint_tile", { pos = key })
-		else
-			Gamestate.unsee_vis_pos(key)
-			msg.post("game:/controller#tiles", "tint_tile", { pos = key })
-		end
+		update_vis_pos(val, key)
 	end
 
 	room.state.vis['on_remove'] = function (_, key)
@@ -50,14 +93,7 @@ local function handle_gamestate_updates()
 
 	-- Known Tiles
 	room.state.tiles['on_add'] = function (tile, _)
-		msg.post("game:/controller#tiles", "create_tile", { pos = tile.pos, tile_type = tile.symbol })
-
-		-- force recalc on reloading/observing
-		local _pos = tostring(tile.pos)
-		local vis = Gamestate.get_vis_pos(_pos)
-		if vis ~= true then
-			msg.post("game:/controller#tiles", "tint_tile", { pos = tile.pos })
-		end
+		add_tile(tile)
 	end
 
 	room.state.tiles['on_remove'] = function (tile, _)
@@ -71,29 +107,11 @@ local function handle_gamestate_updates()
 
 	-- Actors
 	room.state.actors['on_add'] = function (actor, _)
-		msg.post("game:/controller#actors", "create_actor", { 
-			id = actor.id,
-			pos = actor.pos,
-			actor_type = actor.symbol
-		})
-
-		if actor.id == 0 then
-			Gamestate.update_player_stats(actor.hp, actor.maxHp)
-			msg.post("game:/gui#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
-		end
+		add_actor(actor)
 	end
 
 	room.state.actors['on_change'] = function (actor, _)
-		msg.post("game:/controller#actors", "update_actor", { 
-			id = actor.id,
-			pos = actor.pos,
-			actor_type = actor.symbol 
-		})
-
-		if actor.id == 0 then
-			Gamestate.update_player_stats(actor.hp, actor.maxHp)
-			msg.post("game:/gui#gui", "update_player_hp_text", { hp = actor.hp, max_hp = actor.maxHp })
-		end
+		update_actor(actor)
 	end
 
 	room.state.actors['on_remove'] = function (actor, _)
@@ -125,7 +143,7 @@ local function create_new_game(password)
 		end
 
 		room = _room
-
+		handle_gamestate_updates()
 		handle_room_updates()
 
 		room:send("startNewGame", { password = password })
@@ -134,8 +152,8 @@ local function create_new_game(password)
 			Gamestate.set_creating(false)
 
 			if message.success == true then
-				handle_gamestate_updates()
 				Gamestate.set_game_id(message.topicId)
+				msg.post("game:/gui#gui", "update_game_id")
 				msg.post("/controller#controller", "goto_game")
 			else
 				monarch.post("new_game_menu", "creation_error")
@@ -154,7 +172,7 @@ local function resume_game(game_id, password)
 		end
 
 		room = _room
-		
+		handle_gamestate_updates()
 		handle_room_updates()
 
 		room:send("rebuildGame", { gameAddress = game_id, password = password })
@@ -163,9 +181,9 @@ local function resume_game(game_id, password)
 			Gamestate.set_creating(false)
 			
 			if message.success == true then
-				handle_gamestate_updates()
 				Gamestate.set_game_id(message.topicId)
-				--msg.post("/controller#controller", "goto_game")
+				msg.post("game:/gui#gui", "update_game_id")
+				msg.post("/controller#controller", "goto_game")
 			else
 				monarch.post("resume_menu", "rebuild_error")
 			end
@@ -182,8 +200,9 @@ local function observe_game(room_id)
 		end
 
 		room = _room
+		handle_room_updates()
 
-		handle_gamestate_updates()
+		-- TODO connect and setup updates
 	end)
 end
 
