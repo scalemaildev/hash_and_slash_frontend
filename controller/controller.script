@@ -2,6 +2,8 @@ local monarch = require "monarch.monarch"
 local Gamestate = require "game.gamestate.gamestate"
 local debug
 
+web_build = false
+
 local function update_button(button)
 	if button.over_now then
 		gui.play_flipbook(button.node, "mottle_button_hover")
@@ -45,6 +47,10 @@ end
 function init(self)
 	debug = sys.get_engine_info().is_debug
 
+	if sys.get_sys_info().system_name == "HTML5" then
+		web_build = true
+	end
+	
 	if debug then
 		print("DEBUG MODE")
 	end
