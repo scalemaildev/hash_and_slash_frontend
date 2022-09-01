@@ -4,12 +4,16 @@ local debug
 
 web_build = false
 
-local function update_button(button)
+function update_button(button)
 	if button.over_now then
 		gui.play_flipbook(button.node, "mottle_button_hover")
 	elseif button.out_now then
 		gui.play_flipbook(button.node, "mottle_button")
 	end
+end
+
+function reset_start_menu(mouse_coords)
+	-- TODO the buttons
 end
 
 local function goto_start_menu(self)
@@ -56,7 +60,7 @@ function init(self)
 	end
 
 	goto_start_menu(self)
+	
 	msg.post("controller#game_proxy", "load")
-
 	msg.post(".", "acquire_input_focus")
 end

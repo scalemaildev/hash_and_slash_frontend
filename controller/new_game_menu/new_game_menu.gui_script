@@ -119,7 +119,7 @@ function on_message(self, message_id, message)
     elseif message_id == hash("creation_error") then
         gui.set_color(info_node, red)
         gui.set_text(info_node, message.error_message)
-    elseif message_id == hash("reset_text") then
+    elseif message_id == hash("reset_menu") then
         gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
         gui.set_text(info_node, "Fill out both fields.")
 

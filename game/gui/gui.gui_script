@@ -9,6 +9,14 @@ local MessageReel = require "game.gamestate.message_reel"
 
 local rich_messages = {}
 
+local function update_short_button(button)
+	if button.over_now then
+		gui.play_flipbook(button.node, "mottle_button_short_hover")
+	elseif button.out_now then
+		gui.play_flipbook(button.node, "mottle_button_short")
+	end
+end
+
 local function update_round_text(new_round)
 	local round_text = gui.get_node("round")
 	gui.set_text(round_text, 'Round: ' .. new_round)
@@ -62,14 +70,6 @@ local function update_message_reel()
 	end
 end
 
-function update_button(button)
-	if button.over_now then
-		gui.play_flipbook(button.node, "mottle_button_hover")
-	elseif button.out_now then
-		gui.play_flipbook(button.node, "mottle_button")
-	end
-end
-
 function on_input(self, action_id, action)
 	if monarch.is_visible("quit_modal") or monarch.is_visible("controls_modal") or monarch.is_visible("end_splash") then return end
 	
@@ -87,11 +87,11 @@ function on_input(self, action_id, action)
 
 		gooey.button("controls_button", action_id, action, function(button)
 			monarch.show("controls_modal")
-		end, update_button)
+		end, update_short_button)
 
 		gooey.button("quit_button", action_id, action, function(button)
 			monarch.show("quit_modal", {}, { quit_program = false })
-		end, update_button)
+		end, update_short_button)
 	end)
 
 	return group.consumed

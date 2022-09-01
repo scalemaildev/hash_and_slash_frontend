@@ -1,7 +1,7 @@
 local gooey = require "gooey.gooey"
 local monarch = require "monarch.monarch"
 
-local function reset_ng_text()
+local function reset_new_game_menu(action)
     if password_g ~= nil then
         password_g.selected = false
         password_g.text = nil
@@ -11,11 +11,11 @@ local function reset_ng_text()
         repassword_g.selected = false
         repassword_g.text = nil
     end
-    
-    monarch.post("new_game_menu", "reset_text")
+
+    monarch.post("new_game_menu", "reset_menu")
 end
 
-local function reset_resume_text()
+local function reset_resume_menu(action)
     if game_id_g ~= nil then
         game_id_g.selected = false
         game_id_g.text = nil
@@ -24,51 +24,46 @@ local function reset_resume_text()
         resume_password.selected = false
         resume_password.text = nil
     end
-    
-    monarch.post("resume_menu", "reset_text")
+
+    monarch.post("resume_menu", "reset_menu")
 end
 
-local function reset_observe_text()
-    -- TODO
-    
-    monarch.post("observe_menu", "reset_text")
+local function reset_observe_menu(action)
+
+    monarch.post("observe_menu", "reset_menu")
 end
 
 function on_input(self, action_id, action)
     -- GOOEY UI
     local group = gooey.group("start_menu_group", function()
-
         gooey.button("new_game_button", action_id, action, function(button)
-            monarch.replace("new_game_menu", {}, {}, reset_ng_text)
+            monarch.replace("new_game_menu", {}, {}, reset_new_game_menu)
         end, update_button)
 
         gooey.button("resume_button", action_id, action, function(button)
-            monarch.replace("resume_menu", {}, {}, reset_resume_text)
+            monarch.replace("resume_menu", {}, {}, reset_resume_menu)
         end, update_button)
-        
+
         gooey.button("observe_button", action_id, action, function(button)
-            monarch.replace("observe_menu", {}, {}, reset_observe_text)
+            monarch.replace("observe_menu", {}, {}, reset_observe_menu)
         end, update_button)
 
         if not web_build then
-            gooey.button("quit_button", action_id, action, function(button)
+            quit_button = gooey.button("quit_button", action_id, action, function(button)
                 monarch.show("quit_modal", {}, { quit_program = true })
             end, update_button)
-        else
-            local quit_button_dis = gui.get_node("quit_button")
-            gui.play_flipbook(quit_button_dis, "mottle_button_hover")
         end
     end)
     
     -- KEYPRESSES
     if action.pressed then
         if action_id == hash("n") then
-            monarch.replace("new_game_menu", {}, {}, reset_ng_text)
+            monarch.replace("new_game_menu", {}, {}, reset_new_game_menu)
         elseif action_id == hash("r") then
-            monarch.replace("resume_menu", {}, {}, reset_resume_text)
+            monarch.replace("resume_menu", {}, {}, reset_resume_menu)
         elseif action_id == hash("o") then
-            monarch.replace("observe_menu", {}, {}, reset_observe_text)
-        elseif action_id == hash("q") or action_id == hash("esc") and not web_build then
+            monarch.replace("observe_menu", {}, {}, reset_observe_menu)
+        elseif (action_id == hash("q") or action_id == hash("esc")) and not web_build then
             monarch.show("quit_modal", {}, { quit_program = true })
         end
     end
