@@ -126,7 +126,7 @@ end
 
 local function handle_room_updates()
 	room:on_message("setGameActive", function(message)
-		-- TODO
+		msg.post("game:/gui#gui", "update_active_game", message)
 	end)
 
 	room:on_message("updateObsCount", function(message)

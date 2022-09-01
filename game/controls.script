@@ -50,7 +50,7 @@ function on_input(self, action_id, action)
 		end
 
 	-- KEYS
-	elseif action.pressed then
+	elseif action.pressed and not Gamestate.is_observer() then
 		-- PLAYER ACTIONS
 		if action_id == hash("n") or action_id == hash("kp_1") then
 			msg.post("controller:/controller#colyseus", "player_action", {

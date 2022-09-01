@@ -9,6 +9,8 @@ local MessageReel = require "game.gamestate.message_reel"
 
 local rich_messages = {}
 
+local red = vmath.vector4(1, 0, 0, 1)
+
 local function update_short_button(button)
 	if button.over_now then
 		gui.play_flipbook(button.node, "mottle_button_short_hover")
@@ -109,6 +111,16 @@ function on_message(self, message_id, message, sender)
 	elseif message_id == hash("update_game_id") then
 		local game_id_node = gui.get_node("game_id")
 		gui.set_text(game_id_node, "Game ID: " .. Gamestate.get_game_id())
+	elseif message_id == hash("update_active_game") then
+		if Gamestate.is_observer() then
+			if message.active == false then
+				gui.set_color(observer_text_node, red)
+				gui.set_text(observer_text_node, "INACTIVE GAME")
+			else
+				gui.set_color(observer_text_node, vmath.vector4(0.878, 0.878, 0.878, 1))
+				gui.set_text(observer_text_node, "OBSERVING")
+			end
+		end
 	end
 end
 
@@ -116,4 +128,9 @@ function init(self)
 	gooey.acquire_input()
 
 	gui.set_render_order(1)
+
+	if Gamestate.is_observer() then
+		observer_text_node = gui.get_node("observer_text")
+		gui.set_text(observer_text_node, "OBSERVING")
+	end
 end

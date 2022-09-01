@@ -1,5 +1,6 @@
 Gamestate = {
 	creating = false,
+	observer_mode = false,
 	room_id = "", -- colyseus room, not hcs topic
 	game_id = "",
 	round = 0,
@@ -20,6 +21,7 @@ Gamestate = {
 -- General
 function Gamestate.reset()
 	Gamestate.creating = false
+	Gamestate.observer_mode = false
 	Gamestate.room_id = ""
 	Gamestate.game_address = ""
 	Gamestate.round = 0
@@ -43,6 +45,15 @@ end
 
 function Gamestate.is_creating()
 	return Gamestate.creating
+end
+
+-- Obs Mode
+function Gamestate.set_observer_mode(bool)
+	Gamestate.observer_mode = bool
+end
+
+function Gamestate.is_observer()
+	return Gamestate.observer_mode
 end
 
 -- Room ID
