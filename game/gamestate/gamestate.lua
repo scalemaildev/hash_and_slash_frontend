@@ -1,6 +1,7 @@
 Gamestate = {
 	creating = false,
 	observer_mode = false,
+	active_games = {},
 	room_id = "", -- colyseus room, not hcs topic
 	game_id = "",
 	round = 0,
@@ -29,8 +30,10 @@ function Gamestate.reset()
 	Gamestate.player_stats.hp = 0
 	Gamestate.player_stats.max_hp = 0
 
-	for k,_ in pairs(Gamestate.vis) do
-		Gamestate.clear_vis_pos(k)
+	Gamestate.clear_active_games()
+
+	for key, _ in pairs(Gamestate.vis) do
+		Gamestate.clear_vis_pos(key)
 	end
 
 	Gamestate.bounds.x = 0
@@ -54,6 +57,17 @@ end
 
 function Gamestate.is_observer()
 	return Gamestate.observer_mode
+end
+
+-- Active Games
+function Gamestate.add_game(game)
+	table.insert(Gamestate.active_games, game)
+end
+
+function Gamestate.clear_active_games()
+	for key, _ in pairs(Gamestate.active_games) do
+		Gamestate.active_games[key] = nil
+	end
 end
 
 -- Room ID

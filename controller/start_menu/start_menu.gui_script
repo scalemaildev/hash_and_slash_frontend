@@ -29,7 +29,6 @@ local function reset_resume_menu(action)
 end
 
 local function reset_observe_menu(action)
-
     monarch.post("observe_menu", "reset_menu")
 end
 

@@ -245,6 +245,28 @@ function resolve_player_action(action)
 	room:send("playerAction", action)
 end
 
+function get_active_games()
+	Gamestate.clear_active_games()
+	
+	local rooms = client:get_available_rooms("gameRoom", function(err, rooms)
+		if (err) then
+			if monarch.is_visible("observe_menu") then
+				monarch.post("observe_menu", "fetch_error")
+			end
+			print(err);
+			return
+		end
+
+		for i, room in pairs(rooms) do
+			if room.metadata.gameActive == true then
+				Gamestate.add_game(room)
+			end
+		end
+
+		monarch.post("observe_menu", "refresh_list")
+	end);
+end
+
 function on_message(self, message_id, message, sender)
 	if message_id == hash("create_new_game") then
 		local room_id = create_new_game(message.password)
@@ -252,6 +274,8 @@ function on_message(self, message_id, message, sender)
 		local room_id = resume_game(message.game_id, message.password)
 	elseif message_id == hash("player_action") then
 		resolve_player_action(message)
+	elseif message_id == hash("get_active_games") then
+		get_active_games()
 	elseif message_id == hash("quit_game") then
 		room:send("playerQuitGame") -- TODO dependent on whether observing
 		room:leave()

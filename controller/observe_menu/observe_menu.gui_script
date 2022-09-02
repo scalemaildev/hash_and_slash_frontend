@@ -6,10 +6,28 @@ local info_node
 
 local red = vmath.vector4(1, 0, 0, 1)
 
+local function get_active_games()
+    msg.post("controller:/controller#colyseus", "get_active_games")
+end
+
+local function update_refresh_button(button)
+    if button.over_now then
+        gui.play_flipbook(button.node, "refresh_button_hover")
+    elseif button.out_now then
+        gui.play_flipbook(button.node, "refresh_button")
+    end
+end
+
 function on_input(self, action_id, action)
     -- GOOEY UI
     local group = gooey.group("observe_menu_group", function()
-        --
+        gooey.button("refresh_button", action_id, action, function(button)
+            -- TODO refresh
+        end, update_refresh_button)
+
+        gooey.button("back_button", action_id, action, function(button)
+            monarch.replace("start_menu")
+        end, update_button)
     end)
 
     -- KEYPRESSES
@@ -25,9 +43,17 @@ end
 function on_message(self, message_id, message)
     Gamestate.set_creating(false)
 
-    if message_id == hash("reset_text") then
-        gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
-        gui.set_text(info_node, "... Fetching Games ...")
+    if message_id == hash("reset_menu") then
+        get_active_games()
+    elseif message_id == hash("fetch_error") then
+        gui.set_color(info_node, red)
+        gui.set_text(info_node, "Error: Could not retrieve live games from server.")
+    elseif message_id == hash("refresh_list") then
+        if #Gamestate.active_games > 0 then
+            -- TODO display games as a list
+        else
+            gui.set_text(info_node, "No live games are available.")
+        end
     end
 end
 
