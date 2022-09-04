@@ -38,6 +38,10 @@ images {
   image: "/assets/art/gui/refresh_button_hover.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
+images {
+  image: "/assets/art/gui/scroll_button.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
 margin: 0
 extrude_borders: 2
 inner_padding: 0
