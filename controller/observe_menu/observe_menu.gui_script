@@ -3,12 +3,40 @@ local monarch = require "monarch.monarch"
 local Gamestate = require "game.gamestate.gamestate"
 
 local info_node
+local list_container_node
+local scroller_container_node
 
 local red = vmath.vector4(1, 0, 0, 1)
+
+local function show_active_games_list()
+    gui.set_enabled(info_node, false)
+    gui.set_enabled(list_container_node, true)
+    gui.set_enabled(scroller_container_node, true)
+end
+
+local function hide_active_games_list()
+    gui.set_enabled(info_node, true)
+    gui.set_enabled(list_container_node, false)
+    gui.set_enabled(scroller_container_node, false)
+end
+
+local function observe_game(game_id)
+    if Gamestate.is_creating() == true then return end
+    
+    gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
+    gui.set_text(info_node, "... Joining Game: " .. game_id .. " ...")
+    hide_active_games_list()
+
+    pprint(game_id)
+    
+    -- set creating false regardless of error/success on join (and refresh list)
+    -- modal for join error
+end
 
 local function get_active_games()
     gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
     gui.set_text(info_node, "... Fetching Games ...")
+    hide_active_games_list()
     
     msg.post("controller:/controller#colyseus", "get_active_games")
 end
@@ -18,6 +46,15 @@ local function update_refresh_button(button)
         gui.play_flipbook(button.node, "refresh_button_hover")
     elseif button.out_now then
         gui.play_flipbook(button.node, "refresh_button")
+    end
+end
+
+local function update_active_games_list(list)
+    for _, item in pairs(list.items) do
+        if item.data and item.data ~= "" then
+            local text_node = item.nodes[hash("game_id")]
+            gui.set_text(text_node, item.data.metadata.gameAddress)
+        end
     end
 end
 
@@ -31,6 +68,12 @@ function on_input(self, action_id, action)
         gooey.button("back_button", action_id, action, function(button)
             monarch.replace("start_menu")
         end, update_button)
+
+        local list = gooey.dynamic_list("list_background", "list_container", "item_container", Gamestate.active_games, action_id, action, nil, observe_game, update_active_games_list)
+        
+        gooey.vertical_scrollbar("scroller_button", "scroller_background", action_id, action, function(scrollbar)
+            list.scroll_to(0, scrollbar.scroll.y)
+        end)
     end)
 
     -- KEYPRESSES
@@ -49,18 +92,15 @@ function on_message(self, message_id, message)
     if message_id == hash("reset_menu") then
         get_active_games()
     elseif message_id == hash("fetch_error") then
+        hide_active_games_list()
         gui.set_color(info_node, red)
         gui.set_text(info_node, "Error: Could not retrieve live games from server.")
     elseif message_id == hash("refresh_list") then
         if #Gamestate.active_games > 0 then
+            show_active_games_list()
             gui.set_text(info_node, "")
-            
-            for _, game in pairs(Gamestate.active_games) do
-                -- TODO put them in a list
-                pprint(game.roomId) -- for joining
-                pprint(game.metadata.gameAddress) -- for display
-            end
         else
+            hide_active_games_list()
             gui.set_text(info_node, "No live games are available.")
         end
     end
@@ -70,6 +110,9 @@ function init(self)
     gooey.acquire_input()
 
     info_node = gui.get_node("info_text")
+    list_container_node = gui.get_node("list_container")
+    scroller_container_node = gui.get_node("scroller_container")
+    hide_active_games_list()
 
     gui.set_render_order(1)
 end
