@@ -813,7 +813,7 @@ nodes {
 nodes {
   position {
     x: 225.0
-    y: 0.0
+    y: -125.0
     z: 0.0
     w: 1.0
   }
@@ -847,7 +847,7 @@ nodes {
   id: "scroller_container"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
+  pivot: PIVOT_S
   adjust_mode: ADJUST_MODE_FIT
   parent: "panel"
   layer: ""
@@ -905,7 +905,7 @@ nodes {
   id: "scroller_background"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
+  pivot: PIVOT_S
   adjust_mode: ADJUST_MODE_FIT
   parent: "scroller_container"
   layer: ""
@@ -929,7 +929,7 @@ nodes {
 nodes {
   position {
     x: 1.0
-    y: 115.0
+    y: 240.0
     z: 0.0
     w: 1.0
   }
