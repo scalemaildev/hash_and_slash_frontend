@@ -649,7 +649,7 @@ nodes {
   }
   size {
     x: 400.0
-    y: 35.0
+    y: 40.0
     z: 0.0
     w: 1.0
   }
@@ -683,7 +683,7 @@ nodes {
   template_node_child: false
   size_mode: SIZE_MODE_MANUAL
   custom_type: 0
-  enabled: true
+  enabled: false
   visible: true
 }
 nodes {
@@ -707,7 +707,7 @@ nodes {
   }
   size {
     x: 350.0
-    y: 30.0
+    y: 35.0
     z: 0.0
     w: 1.0
   }
