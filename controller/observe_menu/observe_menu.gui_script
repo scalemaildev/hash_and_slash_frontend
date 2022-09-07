@@ -23,14 +23,15 @@ end
 local function observe_game(list_item)
     if Gamestate.is_creating() == true then return end
 
+    Gamestate.set_creating(true)
+
     local game_id = list_item.metadata.gameAddress
     
     gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
     gui.set_text(info_node, "... Joining Game: " .. game_id .. " ...")
     hide_active_games_list()
-    
-    -- set creating false regardless of error/success on join (and refresh list)
-    -- modal for join error
+
+    msg.post("controller:/controller#colyseus", "observe_game", { game_id = game_id })
 end
 
 local function get_active_games()
@@ -105,6 +106,10 @@ function on_message(self, message_id, message)
         hide_active_games_list()
         gui.set_color(info_node, red)
         gui.set_text(info_node, "Error: Could not retrieve live games from server.")
+    elseif message_id == hash("join_error") then
+        hide_active_games_list()
+        gui.set_color(info_node, red)
+        gui.set_text(info_node, "Error: Could not join game. Please refresh.")
     elseif message_id == hash("refresh_list") then
         if #Gamestate.active_games > 0 then
             show_active_games_list()

@@ -227,15 +227,15 @@ end
 local function observe_game(room_id)
 	client:join_by_id(room_id, { isObserver = true }, function(err, _room)
 		if (err ~= nil) then
-			-- TODO display error on observe panel
+			monarch.post("resume_menu", "join_error")
+			Gamestate.set_creating(false)
 			print("join error: " .. err)
 			return
 		end
 
 		room = _room
+		handle_gamestate_updates()
 		handle_room_updates()
-
-		-- TODO connect and setup updates
 	end)
 end
 
@@ -276,6 +276,8 @@ function on_message(self, message_id, message, sender)
 		resolve_player_action(message)
 	elseif message_id == hash("get_active_games") then
 		get_active_games()
+	elseif message_id == hash("observe_game") then
+		local room_id = observe_game(message.game_id)
 	elseif message_id == hash("quit_game") then
 		room:send("playerQuitGame") -- TODO dependent on whether observing
 		room:leave()
