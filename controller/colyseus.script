@@ -126,11 +126,11 @@ end
 
 local function handle_room_updates()
 	room:on_message("setGameActive", function(message)
-		msg.post("game:/gui#gui", "update_active_game", message)
+		msg.post("game:/gui#gui", "update_active_game", { is_active = message.isActive })
 	end)
 
 	room:on_message("updateObsCount", function(message)
-		msg.post("game:/gui#gui", "update_obs_count", { new_count = message })
+		msg.post("game:/gui#gui", "update_obs_count", { new_count = message.newCount })
 	end)
 end
 
@@ -224,10 +224,10 @@ local function resume_game(game_id, password)
 	end)
 end
 
-local function observe_game(room_id)
+local function observe_game(room_id, game_id)
 	client:join_by_id(room_id, { isObserver = true }, function(err, _room)
 		if (err ~= nil) then
-			monarch.post("resume_menu", "join_error")
+			monarch.post("observe_menu", "join_error")
 			Gamestate.set_creating(false)
 			print("join error: " .. err)
 			return
@@ -236,6 +236,13 @@ local function observe_game(room_id)
 		room = _room
 		handle_gamestate_updates()
 		handle_room_updates()
+
+		Gamestate.set_creating(false)
+		Gamestate.set_game_id(game_id)
+		Gamestate.set_observer_mode(true)
+		msg.post("game:/gui#gui", "update_message_reel")
+		msg.post("game:/gui#gui", "update_game_id")
+		msg.post("/controller#controller", "goto_game")
 	end)
 end
 
@@ -277,7 +284,7 @@ function on_message(self, message_id, message, sender)
 	elseif message_id == hash("get_active_games") then
 		get_active_games()
 	elseif message_id == hash("observe_game") then
-		local room_id = observe_game(message.game_id)
+		local room_id = observe_game(message.room_id, message.game_id)
 	elseif message_id == hash("quit_game") then
 		room:send("playerQuitGame") -- TODO dependent on whether observing
 		room:leave()

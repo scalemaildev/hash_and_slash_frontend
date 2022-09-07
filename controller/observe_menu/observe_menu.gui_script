@@ -31,7 +31,7 @@ local function observe_game(list_item)
     gui.set_text(info_node, "... Joining Game: " .. game_id .. " ...")
     hide_active_games_list()
 
-    msg.post("controller:/controller#colyseus", "observe_game", { game_id = game_id })
+    msg.post("controller:/controller#colyseus", "observe_game", { room_id = list_item.roomId, game_id = game_id })
 end
 
 local function get_active_games()

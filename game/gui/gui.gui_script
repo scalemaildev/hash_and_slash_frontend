@@ -113,7 +113,7 @@ function on_message(self, message_id, message, sender)
 		gui.set_text(game_id_node, "Game ID: " .. Gamestate.get_game_id())
 	elseif message_id == hash("update_active_game") then
 		if Gamestate.is_observer() then
-			if message.active == false then
+			if message.is_active == false then
 				gui.set_color(observer_text_node, red)
 				gui.set_text(observer_text_node, "INACTIVE GAME")
 			else
