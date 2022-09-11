@@ -298,6 +298,6 @@ function init(self)
 		client = ColyseusClient.new("ws://localhost:2567")
 	else
 		pprint('PRODUCTION SERVER')
-		client = ColyseusClient.new("wss://noqaut.colyseus.dev")
+		client = ColyseusClient.new("wss://iym-ad.colyseus.dev")
 	end
 end
