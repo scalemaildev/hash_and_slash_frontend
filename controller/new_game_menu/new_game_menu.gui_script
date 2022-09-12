@@ -57,7 +57,7 @@ local function enter_password()
     if Gamestate.is_creating() == true then return end
 
     Gamestate.set_creating(true)
-    
+
     gui.set_color(info_node, vmath.vector4(0.878, 0.878, 0.878, 1))
     gui.set_text(info_node, "... Creating Game ...")
     
@@ -74,17 +74,19 @@ end
 function on_input(self, action_id, action)
     -- GOOEY UI
     local group = gooey.group("new_game_menu_group", function()
-        password_g = gooey.input("password_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 }, update_input)
+        if not Gamestate.is_creating() then
+            password_g = gooey.input("password_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 }, update_input)
 
-        repassword_g = gooey.input("repassword_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 }, update_input)
+            repassword_g = gooey.input("repassword_text", gui.KEYBOARD_TYPE_PASSWORD, action_id, action, { max_length = 12 }, update_input)
 
-        gooey.button("create_button", action_id, action, function()
-            enter_password()
-        end, update_button)
+            gooey.button("create_button", action_id, action, function()
+                enter_password()
+            end, update_button)
 
-        gooey.button("back_button", action_id, action, function()
-            monarch.replace("start_menu")
-        end, update_button)
+            gooey.button("back_button", action_id, action, function()
+                monarch.replace("start_menu")
+            end, update_button)
+        end
     end)
     
     -- KEYPRESSES
