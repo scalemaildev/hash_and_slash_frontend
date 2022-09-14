@@ -154,6 +154,7 @@ local function create_new_game(password)
 
 			if message.success == true then
 				Gamestate.set_game_id(message.topicId)
+				msg.post("game:/gui#gui", "update_round_text", { new_round = 1 })
 				msg.post("game:/gui#gui", "update_game_id")
 				msg.post("/controller#controller", "goto_game")
 			else
@@ -208,14 +209,17 @@ local function resume_game(game_id, password)
 
 				if message.success == true then
 					Gamestate.set_game_id(message.topicId)
+					local round = room.state.round
+					Gamestate.set_round(round)
+					msg.post("game:/gui#gui", "update_round_text", { new_round = round })
 					msg.post("game:/gui#gui", "update_message_reel")
 					msg.post("game:/gui#gui", "update_game_id")
 					msg.post("/controller#controller", "goto_game")
 				else
 					Gamestate.reset()
+					MessageReel.clear()
 					msg.post("game:/controller#tiles", "clear_tiles")
 					msg.post("game:/controller#actors", "clear_actors")
-					MessageReel.clear()
 					monarch.post("resume_menu", "rebuild_error", { error_message = message.message })
 					room = nil
 				end
@@ -240,10 +244,21 @@ local function observe_game(room_id, game_id)
 		Gamestate.set_creating(false)
 		Gamestate.set_game_id(game_id)
 		Gamestate.set_observer_mode(true)
+		local round = room.state.round
+		Gamestate.set_round(round)
+		msg.post("game:/gui#gui", "update_round_text", { new_round = round })
 		msg.post("game:/gui#gui", "update_message_reel")
 		msg.post("game:/gui#gui", "update_game_id")
 		msg.post("/controller#controller", "goto_game")
 	end)
+end
+
+local function cancel_game()
+	if room ~= nil then
+		room:leave()
+		room = nil
+	end
+	Gamestate.set_creating(false)
 end
 
 function resolve_player_action(action)
@@ -289,6 +304,8 @@ function on_message(self, message_id, message, sender)
 		room:send("playerQuitGame") -- TODO dependent on whether observing
 		room:leave()
 		room = nil
+	elseif message_id == hash("cancel_game") then
+		cancel_game()
 	end
 end
 

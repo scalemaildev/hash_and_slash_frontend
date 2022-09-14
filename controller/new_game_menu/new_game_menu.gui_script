@@ -84,6 +84,7 @@ function on_input(self, action_id, action)
             end, update_button)
 
             gooey.button("back_button", action_id, action, function()
+                msg.post("controller:/controller#colyseus", "cancel_game")
                 monarch.replace("start_menu")
             end, update_button)
         end
@@ -92,6 +93,7 @@ function on_input(self, action_id, action)
     -- KEYPRESSES
     if action.pressed then
         if action_id == hash("esc") then
+            msg.post("controller:/controller#colyseus", "cancel_game")
             monarch.replace("start_menu")
         elseif action_id == hash("enter") then
             enter_password()
