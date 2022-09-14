@@ -244,11 +244,9 @@ local function observe_game(room_id, game_id)
 		Gamestate.set_creating(false)
 		Gamestate.set_game_id(game_id)
 		Gamestate.set_observer_mode(true)
-		local round = room.state.round
-		Gamestate.set_round(round)
-		msg.post("game:/gui#gui", "update_round_text", { new_round = round })
 		msg.post("game:/gui#gui", "update_message_reel")
 		msg.post("game:/gui#gui", "update_game_id")
+		msg.post("game:/gui#gui", "update_active_game", { is_active = true })
 		msg.post("/controller#controller", "goto_game")
 	end)
 end
@@ -301,7 +299,7 @@ function on_message(self, message_id, message, sender)
 	elseif message_id == hash("observe_game") then
 		local room_id = observe_game(message.room_id, message.game_id)
 	elseif message_id == hash("quit_game") then
-		room:send("playerQuitGame") -- TODO dependent on whether observing
+		room:send("playerQuitGame")
 		room:leave()
 		room = nil
 	elseif message_id == hash("cancel_game") then

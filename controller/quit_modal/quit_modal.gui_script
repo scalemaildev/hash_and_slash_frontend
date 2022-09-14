@@ -20,6 +20,7 @@ local function quit()
         msg.post("game:/controller#tiles", "clear_tiles")
         msg.post("game:/controller#actors", "clear_actors")
         msg.post("game:/gui#gui", "update_message_reel")
+        msg.post("game:/gui#gui", "update_obs_count", { new_count = 0 })
         monarch.clear(to_start_menu)
     end
 end
