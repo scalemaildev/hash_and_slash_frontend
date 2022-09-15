@@ -120,6 +120,8 @@ function on_message(self, message_id, message, sender)
 				gui.set_color(observer_text_node, vmath.vector4(0.878, 0.878, 0.878, 1))
 				gui.set_text(observer_text_node, "OBSERVING")
 			end
+		else
+			gui.set_text(observer_text_node, "")
 		end
 	end
 end
@@ -129,8 +131,10 @@ function init(self)
 
 	gui.set_render_order(1)
 
+	observer_text_node = gui.get_node("observer_text")
+	
 	if Gamestate.is_observer() then
-		observer_text_node = gui.get_node("observer_text")
+		gui.set_color(observer_text_node, vmath.vector4(0.878, 0.878, 0.878, 1))
 		gui.set_text(observer_text_node, "OBSERVING")
 	end
 end
