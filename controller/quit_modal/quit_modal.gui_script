@@ -6,7 +6,7 @@ local MessageReel = require "game.gamestate.message_reel"
 local quit_program
 
 local function to_start_menu()
-    msg.post("/controller#colyseus", "quit_game")
+    msg.post("/controller#colyseus", "leave_room")
     msg.post("/controller#game_proxy", "disable")
     msg.post("/controller#controller", "goto_start_menu")
 end
@@ -15,6 +15,10 @@ local function quit()
     if quit_program == true then
         msg.post("@system:", "exit", {code = 0})
     else
+        if not Gamestate.is_observer() then
+            msg.post("controller:/controller#colyseus", "quit_game")
+        end
+        
         Gamestate.reset()
         MessageReel.clear()
         msg.post("game:/controller#tiles", "clear_tiles")

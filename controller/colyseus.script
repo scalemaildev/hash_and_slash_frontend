@@ -300,6 +300,7 @@ function on_message(self, message_id, message, sender)
 		local room_id = observe_game(message.room_id, message.game_id)
 	elseif message_id == hash("quit_game") then
 		room:send("playerQuitGame")
+	elseif message_id == hash("leave_room") then
 		room:leave()
 		room = nil
 	elseif message_id == hash("cancel_game") then
