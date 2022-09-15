@@ -6,9 +6,9 @@ local MessageReel = require "game.gamestate.message_reel"
 local quit_program
 
 local function to_start_menu()
-    msg.post("/controller#colyseus", "leave_room")
-    msg.post("/controller#game_proxy", "disable")
-    msg.post("/controller#controller", "goto_start_menu")
+    msg.post("controller:/controller#colyseus", "leave_room")
+    msg.post("controller:/controller#game_proxy", "disable")
+    msg.post("controller:/controller#controller", "goto_start_menu")
 end
 
 local function quit()
