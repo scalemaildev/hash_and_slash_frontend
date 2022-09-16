@@ -3,16 +3,22 @@ local monarch = require "monarch.monarch"
 local Gamestate = require "game.gamestate.gamestate"
 
 local function to_start_menu()
-    msg.post("/controller#colyseus", "quit_game")
-    msg.post("/controller#game_proxy", "disable")
-    msg.post("/controller#controller", "goto_start_menu")
+    msg.post("controller:/controller#colyseus", "leave_room")
+    msg.post("controller:/controller#game_proxy", "disable")
+    msg.post("controller:/controller#controller", "goto_start_menu")
 end
 
 local function quit()
+    if not Gamestate.is_observer() then
+        msg.post("controller:/controller#colyseus", "quit_game")
+    end
+    
     Gamestate.reset()
+    MessageReel.clear()
     msg.post("game:/controller#tiles", "clear_tiles")
     msg.post("game:/controller#actors", "clear_actors")
-    MessageReel.clear()
+    msg.post("game:/gui#gui", "update_message_reel")
+    msg.post("game:/gui#gui", "update_obs_count", { new_count = 0 })
     monarch.clear(to_start_menu)
 end
 
